@@ -53,7 +53,7 @@ WITH RECURSIVE "positions_1" ("sx", "sy", "range", "bx", "by") AS (
     ) AS "values_2"
   ) AS "__4"
   WHERE (NOT EXISTS (
-    SELECT NULL
+    SELECT NULL AS "_"
     FROM "positions_1" AS "positions_10"
     WHERE
       ((abs(("positions_10"."sx" - "__4"."x")) + abs(("positions_10"."sy" - "__4"."y"))) <= "positions_10"."range") AND

@@ -75,7 +75,7 @@ WITH RECURSIVE "map_1" ("x", "y", "char") AS (
   WHERE
     ((("__7"."x" = 2) AND ("__7"."y" = 1)) OR (("__7"."x" = ("size_3"."max_x" - 1)) AND ("__7"."y" = "size_3"."max_y")) OR (("__7"."x" BETWEEN 2 AND ("size_3"."max_x" - 1)) AND ("__7"."y" BETWEEN 2 AND ("size_3"."max_y" - 1)))) AND
     (NOT EXISTS (
-      SELECT NULL
+      SELECT NULL AS "_"
       FROM "blizzards_1" AS "blizzards_2"
       WHERE
         ((((((("blizzards_2"."x" + ("blizzards_2"."dx" * "__7"."t")) - 2) % ("blizzards_2"."max_x" - 2)) + ("blizzards_2"."max_x" - 2)) % ("blizzards_2"."max_x" - 2)) + 2) = "__7"."x") AND
@@ -132,7 +132,7 @@ WITH RECURSIVE "map_1" ("x", "y", "char") AS (
   WHERE
     ((("__14"."x" = 2) AND ("__14"."y" = 1)) OR (("__14"."x" = ("size_4"."max_x" - 1)) AND ("__14"."y" = "size_4"."max_y")) OR (("__14"."x" BETWEEN 2 AND ("size_4"."max_x" - 1)) AND ("__14"."y" BETWEEN 2 AND ("size_4"."max_y" - 1)))) AND
     (NOT EXISTS (
-      SELECT NULL
+      SELECT NULL AS "_"
       FROM "blizzards_1" AS "blizzards_3"
       WHERE
         ((((((("blizzards_3"."x" + ("blizzards_3"."dx" * "__14"."t")) - 2) % ("blizzards_3"."max_x" - 2)) + ("blizzards_3"."max_x" - 2)) % ("blizzards_3"."max_x" - 2)) + 2) = "__14"."x") AND
@@ -191,7 +191,7 @@ WITH RECURSIVE "map_1" ("x", "y", "char") AS (
   WHERE
     ((("__20"."x" = 2) AND ("__20"."y" = 1)) OR (("__20"."x" = ("size_5"."max_x" - 1)) AND ("__20"."y" = "size_5"."max_y")) OR (("__20"."x" BETWEEN 2 AND ("size_5"."max_x" - 1)) AND ("__20"."y" BETWEEN 2 AND ("size_5"."max_y" - 1)))) AND
     (NOT EXISTS (
-      SELECT NULL
+      SELECT NULL AS "_"
       FROM "blizzards_1" AS "blizzards_4"
       WHERE
         ((((((("blizzards_4"."x" + ("blizzards_4"."dx" * "__20"."t")) - 2) % ("blizzards_4"."max_x" - 2)) + ("blizzards_4"."max_x" - 2)) % ("blizzards_4"."max_x" - 2)) + 2) = "__20"."x") AND
@@ -250,7 +250,7 @@ WITH RECURSIVE "map_1" ("x", "y", "char") AS (
   WHERE
     ((("__26"."x" = 2) AND ("__26"."y" = 1)) OR (("__26"."x" = ("size_6"."max_x" - 1)) AND ("__26"."y" = "size_6"."max_y")) OR (("__26"."x" BETWEEN 2 AND ("size_6"."max_x" - 1)) AND ("__26"."y" BETWEEN 2 AND ("size_6"."max_y" - 1)))) AND
     (NOT EXISTS (
-      SELECT NULL
+      SELECT NULL AS "_"
       FROM "blizzards_1" AS "blizzards_5"
       WHERE
         ((((((("blizzards_5"."x" + ("blizzards_5"."dx" * "__26"."t")) - 2) % ("blizzards_5"."max_x" - 2)) + ("blizzards_5"."max_x" - 2)) % ("blizzards_5"."max_x" - 2)) + 2) = "__26"."x") AND

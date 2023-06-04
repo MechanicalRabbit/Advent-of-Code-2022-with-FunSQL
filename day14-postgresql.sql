@@ -59,7 +59,7 @@ WITH RECURSIVE "segments_1" ("x1", "x2", "y1", "y2") AS (
     ) AS "values_2"
   ) AS "__8"
   WHERE (NOT (EXISTS (
-    SELECT NULL
+    SELECT NULL AS "_"
     FROM "segments_1" AS "segments_3"
     WHERE
       ("__8"."x" BETWEEN "segments_3"."x1" AND "segments_3"."x2") AND
@@ -99,7 +99,7 @@ WITH RECURSIVE "segments_1" ("x1", "x2", "y1", "y2") AS (
     ) AS "values_4"
   ) AS "reachable_4"
   WHERE (EXISTS (
-    SELECT NULL
+    SELECT NULL AS "_"
     FROM "reachable_1" AS "reachable_5"
     WHERE
       ("reachable_5"."x" = "reachable_4"."x") AND
@@ -130,14 +130,14 @@ WITH RECURSIVE "segments_1" ("x1", "x2", "y1", "y2") AS (
         ("__13"."y" + 1) AS "y",
         "values_6"."dx",
         (NOT (EXISTS (
-          SELECT NULL
+          SELECT NULL AS "_"
           FROM "fallthrough_1" AS "fallthrough_2"
           WHERE
             ("fallthrough_2"."x" = "__13"."x") AND
             ("fallthrough_2"."y" = ("__13"."y" + 1))
         ))) AS "down_rest",
         (NOT (EXISTS (
-          SELECT NULL
+          SELECT NULL AS "_"
           FROM "fallthrough_1" AS "fallthrough_3"
           WHERE
             ("fallthrough_3"."x" = ("__13"."x" - 1)) AND
@@ -160,7 +160,7 @@ WITH RECURSIVE "segments_1" ("x1", "x2", "y1", "y2") AS (
       (("__14"."dx" = 1) AND "__14"."down_rest" AND "__14"."down_left_rest")
   ) AS "__15"
   WHERE (EXISTS (
-    SELECT NULL
+    SELECT NULL AS "_"
     FROM "reachable_1" AS "reachable_6"
     WHERE
       ("reachable_6"."x" = "__15"."x") AND
@@ -174,7 +174,7 @@ FROM (
   SELECT count(*) AS "part1"
   FROM "__12" AS "__16"
   WHERE (NOT (EXISTS (
-    SELECT NULL
+    SELECT NULL AS "_"
     FROM "fallthrough_1" AS "fallthrough_4"
     WHERE
       ("fallthrough_4"."x" = "__16"."x") AND

@@ -83,7 +83,7 @@ WITH RECURSIVE "cubes_1" ("x", "y", "z") AS (
     ("bounds_7"."y" BETWEEN "bounds_8"."min_y" AND "bounds_8"."max_y") AND
     ("bounds_7"."z" BETWEEN "bounds_8"."min_z" AND "bounds_8"."max_z") AND
     (NOT EXISTS (
-      SELECT NULL
+      SELECT NULL AS "_"
       FROM "cubes_1" AS "cubes_7"
       WHERE
         ("cubes_7"."x" = "bounds_7"."x") AND
