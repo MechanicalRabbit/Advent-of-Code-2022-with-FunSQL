@@ -15,7 +15,7 @@ DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws
 @funsql begin
 
 with_ordinality(q) =
-    `? WITH ORDINALITY`(q)
+    `? WITH ORDINALITY`($q)
 
 parse_map() =
     begin
@@ -48,10 +48,10 @@ calculate_blizzards() =
     end
 
 mod(x, n) =
-    (x % n + n) % n
+    ($x % $n + $n) % $n
 
 mod_walls(x, n) =
-    mod(x - 2, n - 2) + 2
+    mod($x - 2, $n - 2) + 2
 
 not_in_blizzard(X, Y, T) =
     not_exists(
@@ -60,7 +60,7 @@ not_in_blizzard(X, Y, T) =
             filter(
                 mod_walls(x + dx * :T, max_x) == :X &&
                 mod_walls(y + dy * :T, max_y) == :Y)
-            bind(:X => X, :Y => Y, :T => T)
+            bind(:X => $X, :Y => $Y, :T => $T)
         end)
 
 at_start() =
@@ -88,7 +88,7 @@ travel_step(; goal = at_finish()) =
         cross_join(from(size))
         filter(at_start() || at_finish() || in_valley())
         filter(not_in_blizzard(x, y, t))
-        define(done => goal)
+        define(done => $goal)
     end
 
 solve_part1() =

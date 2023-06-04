@@ -15,13 +15,13 @@ DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws
 @funsql begin
 
 array_get(a, i) =
-    `?[?]`(a, i)
+    `?[?]`($a, $i)
 
 as_bigint(str) =
-    `(?::bigint)`(str)
+    `(?::bigint)`($str)
 
 with_ordinality(q) =
-    `? WITH ORDINALITY`(q)
+    `? WITH ORDINALITY`($q)
 
 parse_numbers() =
     begin
@@ -41,7 +41,7 @@ calculate_length() =
     end
 
 mod1(x, n) =
-    ((x - 1) % n + n) % n + 1
+    (($x - 1) % $n + $n) % $n + 1
 
 mix_step() =
     begin
@@ -83,7 +83,7 @@ answer(name) =
             index3000 => mod1(index0 + 3000, length))
         group()
         define(
-            name =>
+            $name =>
                 sum[value, filter = in(index, index1000, index2000, index3000)])
     end
 

@@ -15,10 +15,10 @@ DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws
 @funsql begin
 
 with_ordinality(q) =
-    `? WITH ORDINALITY`(q)
+    `? WITH ORDINALITY`($q)
 
 array_get(a, i) =
-    `?[?]`(a, i)
+    `?[?]`($a, $i)
 
 parse_packets() =
     begin
@@ -65,7 +65,7 @@ recode_packets() =
     end
 
 collate_c(str) =
-    ` COLLATE "C"`(str)
+    ` COLLATE "C"`($str)
 
 solve_part1() =
     begin

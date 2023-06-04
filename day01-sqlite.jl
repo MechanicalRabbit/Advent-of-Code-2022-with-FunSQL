@@ -4,27 +4,27 @@ using SQLite
 @funsql begin
 
 split_first(text, sep) =
-    instr(text, sep) > 0 ? substr(text, 1, instr(text, sep) - 1) : text
+    instr($text, $sep) > 0 ? substr($text, 1, instr($text, $sep) - 1) : $text
 
 split_rest(text, sep) =
-    instr(text, sep) > 0 ? substr(text, instr(text, sep) + $(length(sep))) : ""
+    instr($text, $sep) > 0 ? substr($text, instr($text, $sep) + $(length(sep))) : ""
 
 split_step(sep) =
     begin
         filter(rest != "")
         define(
             index => index + 1,
-            chunk => split_first(rest, sep),
-            rest => split_rest(rest, sep))
+            chunk => split_first(rest, $sep),
+            rest => split_rest(rest, $sep))
     end
 
 split(text, sep) =
     begin
         define(
             index => 0,
-            rest => text)
-        split_step(sep)
-        iterate(split_step(sep))
+            rest => $text)
+        split_step($sep)
+        iterate(split_step($sep))
     end
 
 parse_inventories() =

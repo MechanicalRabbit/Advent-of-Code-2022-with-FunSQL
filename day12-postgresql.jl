@@ -15,7 +15,7 @@ DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws
 @funsql begin
 
 with_ordinality(q) =
-    `? WITH ORDINALITY`(q)
+    `? WITH ORDINALITY`($q)
 
 parse_heights() =
     begin
@@ -57,10 +57,10 @@ step() =
 solve(name, init) =
     begin
         from(heights)
-        define(dist => case(init, 0))
+        define(dist => case($init, 0))
         iterate(step())
         group()
-        define(name => max[dist])
+        define($name => max[dist])
     end
 
 solve_part1() =

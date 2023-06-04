@@ -15,10 +15,10 @@ DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws
 @funsql begin
 
 array_get(a, i) =
-    `?[?]`(a, i)
+    `?[?]`($a, $i)
 
 with_ordinality(q) =
-    `? WITH ORDINALITY`(q)
+    `? WITH ORDINALITY`($q)
 
 parse_elves() =
     begin

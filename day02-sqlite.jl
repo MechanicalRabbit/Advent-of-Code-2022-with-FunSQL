@@ -21,10 +21,10 @@ const scores_part2 = [(3+0) (1+3) (2+6); (1+0) (2+3) (3+6); (2+0) (3+3) (1+6)]
 @funsql begin
 
 split_line(text) =
-    instr(text, "\n") > 0 ? substr(text, 1, instr(text, "\n") - 1) : text
+    instr($text, "\n") > 0 ? substr($text, 1, instr($text, "\n") - 1) : $text
 
 split_rest(text) =
-    instr(text, "\n") > 0 ? substr(text, instr(text, "\n") + 1) : ""
+    instr($text, "\n") > 0 ? substr($text, instr($text, "\n") + 1) : ""
 
 split_lines_one_step() =
     begin
@@ -36,7 +36,7 @@ split_lines_one_step() =
 
 split_lines(text) =
     begin
-        define(rest => text)
+        define(rest => $text)
         split_lines_one_step()
         iterate(split_lines_one_step())
     end

@@ -15,13 +15,13 @@ DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws
 @funsql begin
 
 as_integer(s) =
-    `(?::integer)`(s)
+    `(?::integer)`($s)
 
 as_bigint(s) =
-    `(?::bigint)`(s)
+    `(?::bigint)`($s)
 
 array_get(a, i) =
-    `?[?]`(a, i)
+    `?[?]`($a, $i)
 
 parse_monkeys() =
     begin
@@ -56,20 +56,20 @@ parse_items() =
     end
 
 operation(level, op, arg) =
-    op == "+" ? level + arg : level * coalesce(arg, level)
+    $op == "+" ? $level + $arg : $level * coalesce($arg, $level)
 
 process_one_item(; relief = level / 3, max_round = 20) =
     begin
         join(monkey => from(monkeys), on = index == monkey.index)
         define(level => operation(level, monkey.op, monkey.arg))
-        define(level => relief)
+        define(level => $relief)
         define(
             next_index =>
                 mod(level, monkey.test) == 0 ? monkey.on_true : monkey.on_false)
         define(
             round => round + (next_index < index ? 1 : 0),
             index => next_index)
-        filter(round <= max_round)
+        filter(round <= $max_round)
     end
 
 answer(name) =
@@ -79,7 +79,7 @@ answer(name) =
         partition(order_by = [total])
         define(score => total * lag[total])
         group()
-        define(name => max[score])
+        define($name => max[score])
     end
 
 solve_part1() =

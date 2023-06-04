@@ -15,10 +15,10 @@ DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws
 @funsql begin
 
 array_get(a, i) =
-    `?[?]`(a, i)
+    `?[?]`($a, $i)
 
 as_integer(str) =
-    `(?::integer)`(str)
+    `(?::integer)`($str)
 
 parse_cubes() =
     begin
@@ -55,7 +55,7 @@ not_a_cube(X, Y, Z) =
         begin
             from(cubes)
             filter(x == :X && y == :Y && z == :Z)
-            bind(:X => X, :Y => Y, :Z => Z)
+            bind(:X => $X, :Y => $Y, :Z => $Z)
         end)
 
 calculate_bounds() =

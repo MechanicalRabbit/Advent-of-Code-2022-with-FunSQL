@@ -15,16 +15,16 @@ DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws
 @funsql begin
 
 with_ordinality(q) =
-    `? WITH ORDINALITY`(q)
+    `? WITH ORDINALITY`($q)
 
 as_integer(str) =
-    `(?::integer)`(str)
+    `(?::integer)`($str)
 
 array_get(a, i) =
-    `?[?]`(a, i)
+    `?[?]`($a, $i)
 
 string_agg(s, i) =
-    `string_agg(?, NULL ORDER BY ?)`[s, i]
+    `string_agg(?, NULL ORDER BY ?)`[$s, $i]
 
 parse_stacks() =
     begin
@@ -68,7 +68,7 @@ apply_move(; reverse) =
                 elseif col == move.to
                     concat(
                         maybe_reverse(substr(lead[stack, move.from - col], 1, move.count),
-                                      reverse = reverse),
+                                      reverse = $reverse),
                         stack)
                 else
                     stack
@@ -79,11 +79,11 @@ solve(name; reverse) =
     begin
         from(stacks)
         define(index => 1)
-        iterate(apply_move(reverse = reverse))
+        iterate(apply_move(reverse = $reverse))
         partition()
         filter(index == max[index])
         group()
-        define(name => string_agg(substr(stack, 1, 1), col))
+        define($name => string_agg(substr(stack, 1, 1), col))
     end
 
 solve_part1() =

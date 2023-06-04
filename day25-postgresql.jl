@@ -15,7 +15,7 @@ DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws
 @funsql begin
 
 as_bigint(n) =
-    `?::bigint`(n)
+    `?::bigint`($n)
 
 parse_requirements() =
     from(

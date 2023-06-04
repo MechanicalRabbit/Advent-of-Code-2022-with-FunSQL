@@ -4,10 +4,10 @@ using SQLite
 @funsql begin
 
 split_line(text) =
-    instr(text, "\n") > 0 ? substr(text, 1, instr(text, "\n") - 1) : text
+    instr($text, "\n") > 0 ? substr($text, 1, instr($text, "\n") - 1) : $text
 
 split_rest(text) =
-    instr(text, "\n") > 0 ? substr(text, instr(text, "\n") + 1) : ""
+    instr($text, "\n") > 0 ? substr($text, instr($text, "\n") + 1) : ""
 
 split_lines_one_step() =
     begin
@@ -22,7 +22,7 @@ split_lines(text) =
     begin
         define(
             index => 0,
-            rest => text)
+            rest => $text)
         split_lines_one_step()
         iterate(split_lines_one_step())
     end

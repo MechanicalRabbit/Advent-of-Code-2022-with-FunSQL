@@ -4,13 +4,13 @@ using SQLite
 @funsql begin
 
 split_first(text, sep = "\n") =
-    instr(text, sep) > 0 ? substr(text, 1, instr(text, sep) - 1) : text
+    instr($text, $sep) > 0 ? substr($text, 1, instr($text, $sep) - 1) : $text
 
 split_rest(text, sep = "\n") =
-    instr(text, sep) > 0 ? substr(text, instr(text, sep) + $(length(sep))) : ""
+    instr($text, $sep) > 0 ? substr($text, instr($text, $sep) + $(length(sep))) : ""
 
 addx(line) =
-    `CAST(? AS INTEGER)`(substr(line, 6))
+    `CAST(? AS INTEGER)`(substr($line, 6))
 
 split_one_instruction() =
     begin
@@ -26,7 +26,7 @@ split_instructions(text) =
     begin
         define(
             ip => 0,
-            rest => text)
+            rest => $text)
         split_one_instruction()
         iterate(split_one_instruction())
     end

@@ -4,16 +4,16 @@ using SQLite
 @funsql begin
 
 split_first(text, sep = "\n") =
-    instr(text, sep) > 0 ? substr(text, 1, instr(text, sep) - 1) : text
+    instr($text, $sep) > 0 ? substr($text, 1, instr($text, $sep) - 1) : $text
 
 split_rest(text, sep = "\n") =
-    instr(text, sep) > 0 ? substr(text, instr(text, sep) + $(length(sep))) : ""
+    instr($text, $sep) > 0 ? substr($text, instr($text, $sep) + $(length(sep))) : ""
 
 dx(dir) =
-    dir == "L" ? -1 : dir == "R" ? 1 : 0
+    $dir == "L" ? -1 : $dir == "R" ? 1 : 0
 
 dy(dir) =
-    dir == "U" ? -1 : dir == "D" ? 1 : 0
+    $dir == "U" ? -1 : $dir == "D" ? 1 : 0
 
 split_motions_one_step() =
     begin
@@ -30,7 +30,7 @@ split_motions(text) =
     begin
         define(
             motion => 0,
-            rest => text)
+            rest => $text)
         split_motions_one_step()
         iterate(split_motions_one_step())
     end

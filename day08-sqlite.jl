@@ -4,10 +4,10 @@ using SQLite
 @funsql begin
 
 split_first(text, sep) =
-    instr(text, sep) > 0 ? substr(text, 1, instr(text, sep) - 1) : text
+    instr($text, $sep) > 0 ? substr($text, 1, instr($text, $sep) - 1) : $text
 
 split_rest(text, sep) =
-    instr(text, sep) > 0 ? substr(text, instr(text, sep) + $(length(sep))) : ""
+    instr($text, $sep) > 0 ? substr($text, instr($text, $sep) + $(length(sep))) : ""
 
 split_lines_one_step() =
     begin
@@ -22,7 +22,7 @@ split_lines(text) =
     begin
         define(
             row => 0,
-            rest => text)
+            rest => $text)
         split_lines_one_step()
         iterate(split_lines_one_step())
     end
@@ -40,7 +40,7 @@ split_heights(line) =
     begin
         define(
             col => 0,
-            rest => line)
+            rest => $line)
         split_heights_one_step()
         iterate(split_heights_one_step())
     end
@@ -51,10 +51,10 @@ parse_heights() =
 define_max_height(dir, dim1, dim2) =
     begin
         partition(
-            dim1,
-            order_by = [dim2],
+            $dim1,
+            order_by = [$dim2],
             frame = (mode = rows, start = -Inf, finish = -1))
-        define(dir => coalesce(max[height], -1))
+        define($dir => coalesce(max[height], -1))
     end
 
 solve_part1() =
@@ -70,15 +70,15 @@ solve_part1() =
     end
 
 visibility(dim) =
-    coalesce(dim - coalesce(max[dim, filter = height >= threshold], min[dim]), 0)
+    coalesce($dim - coalesce(max[$dim, filter = height >= threshold], min[$dim]), 0)
 
 define_visibility(dir, dim1, dim2) =
     begin
         partition(
-            by = [threshold, dim1],
-            order_by = [dim2],
+            by = [threshold, $dim1],
+            order_by = [$dim2],
             frame = (mode = rows, start = -Inf, finish = -1))
-        define(dir => visibility(dim2))
+        define($dir => visibility($dim2))
     end
 
 solve_part2() =

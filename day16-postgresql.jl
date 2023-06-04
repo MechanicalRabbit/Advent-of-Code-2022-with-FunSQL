@@ -15,13 +15,13 @@ DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws
 @funsql begin
 
 with_ordinality(q) =
-    `? WITH ORDINALITY`(q)
+    `? WITH ORDINALITY`($q)
 
 array_get(a, i) =
-    `?[?]`(a, i)
+    `?[?]`($a, $i)
 
 as_integer(str) =
-    `(?::integer)`(str)
+    `(?::integer)`($str)
 
 parse_valves() =
     begin
@@ -84,8 +84,8 @@ solve_step(T) =
             curr => dst,
             opened => opened | mask,
             t => t + dist + 1)
-        filter(t <= T)
-        define(total => total + rate * (T - t + 1))
+        filter(t <= $T)
+        define(total => total + rate * ($T - t + 1))
         group(t, curr, opened)
         define(total => max[total])
     end

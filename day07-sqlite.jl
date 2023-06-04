@@ -4,18 +4,18 @@ using SQLite
 @funsql begin
 
 split_first(text, sep) =
-    instr(text, sep) > 0 ? substr(text, 1, instr(text, sep) - 1) : text
+    instr($text, $sep) > 0 ? substr($text, 1, instr($text, $sep) - 1) : $text
 
 split_rest(text, sep) =
-    instr(text, sep) > 0 ? substr(text, instr(text, sep) + $(length(sep))) : ""
+    instr($text, $sep) > 0 ? substr($text, instr($text, $sep) + $(length(sep))) : ""
 
 current_dir(line) =
-    if line == "\$ cd /"
+    if $line == "\$ cd /"
         "/"
-    elseif line == "\$ cd .."
+    elseif $line == "\$ cd .."
         rtrim(rtrim(dir, "/"), $(join('a':'z')))
-    elseif substr(line, 1, 4) == "\$ cd"
-        concat(dir, substr(line, 6), "/")
+    elseif substr($line, 1, 4) == "\$ cd"
+        concat(dir, substr($line, 6), "/")
     else
         dir
     end
@@ -32,7 +32,7 @@ split_lines_one_step() =
 split_lines(text) =
     begin
         define(
-            rest => text,
+            rest => $text,
             dir => missing)
         split_lines_one_step()
         iterate(split_lines_one_step())

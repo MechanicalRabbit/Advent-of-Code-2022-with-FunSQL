@@ -16,7 +16,7 @@ split_chars(text) =
     begin
         define(
             index => 0,
-            rest => text)
+            rest => $text)
         split_chars_one_step()
         iterate(split_chars_one_step())
     end
@@ -35,8 +35,8 @@ make_starts() =
 solve(name, l) =
     begin
         from(starts)
-        filter(length == l)
-        select(name => start)
+        filter(length == $l)
+        select($name => start)
     end
 
 solve_part1() =

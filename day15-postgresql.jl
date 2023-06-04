@@ -15,13 +15,13 @@ DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws
 @funsql begin
 
 array_get(a, i) =
-    `?[?]`(a, i)
+    `?[?]`($a, $i)
 
 as_integer(str) =
-    `(?::integer)`(str)
+    `(?::integer)`($str)
 
 as_bigint(str) =
-    `(?::bigint)`(str)
+    `(?::bigint)`($str)
 
 parse_positions() =
     begin
@@ -67,7 +67,7 @@ solve_part1() =
     end
 
 in_range(x, y) =
-    abs(sx - x) + abs(sy - y) <= range
+    abs(sx - $x) + abs(sy - $y) <= range
 
 is_covered(X, Y, W, H) =
     begin
@@ -77,7 +77,7 @@ is_covered(X, Y, W, H) =
             in_range(:X + :W - 1, :Y) &&
             in_range(:X, :Y + :H - 1) &&
             in_range(:X + :W - 1, :Y + :H - 1))
-        bind(:X => X, :Y => Y, :W => W, :H => H)
+        bind(:X => $X, :Y => $Y, :W => $W, :H => $H)
     end
 
 subdivide() =

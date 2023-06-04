@@ -4,10 +4,10 @@ using SQLite
 @funsql begin
 
 split_first(text, sep) =
-    instr(text, sep) > 0 ? substr(text, 1, instr(text, sep) - 1) : text
+    instr($text, $sep) > 0 ? substr($text, 1, instr($text, $sep) - 1) : $text
 
 split_rest(text, sep) =
-    instr(text, sep) > 0 ? substr(text, instr(text, sep) + $(length(sep))) : ""
+    instr($text, $sep) > 0 ? substr($text, instr($text, $sep) + $(length(sep))) : ""
 
 split_lines_one_step() =
     begin
@@ -19,13 +19,13 @@ split_lines_one_step() =
 
 split_lines(text) =
     begin
-        define(rest => text)
+        define(rest => $text)
         split_lines_one_step()
         iterate(split_lines_one_step())
     end
 
 as_integer(text) =
-    `CAST(? AS INTEGER)`(text)
+    `CAST(? AS INTEGER)`($text)
 
 parse_assignments() =
     begin

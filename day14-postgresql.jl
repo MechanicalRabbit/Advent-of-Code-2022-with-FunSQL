@@ -15,13 +15,13 @@ DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws
 @funsql begin
 
 with_ordinality(q) =
-    `? WITH ORDINALITY`(q)
+    `? WITH ORDINALITY`($q)
 
 array_get(a, i) =
-    `?[?]`(a, i)
+    `?[?]`($a, $i)
 
 as_integer(str) =
-    `(?::integer)`(str)
+    `(?::integer)`($str)
 
 parse_segments() =
     begin
@@ -52,7 +52,7 @@ on_segment(X, Y) =
         begin
             from(segments)
             filter(between(:X, x1, x2) && between(:Y, y1, y2))
-            bind(:X => X, :Y => Y)
+            bind(:X => $X, :Y => $Y)
         end)
 
 max_y() =
@@ -86,7 +86,7 @@ is_reachable(X, Y) =
         begin
             from(reachable)
             filter(x == :X && y == :Y)
-            bind(:X => X, :Y => Y)
+            bind(:X => $X, :Y => $Y)
         end)
 
 fallthrough_step() =
@@ -111,7 +111,7 @@ is_fallthrough(X, Y) =
         begin
             from(fallthrough)
             filter(x == :X && y == :Y)
-            bind(:X => X, :Y => Y)
+            bind(:X => $X, :Y => $Y)
         end)
 
 resting_step() =
