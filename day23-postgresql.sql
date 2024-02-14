@@ -15,217 +15,217 @@ WITH RECURSIVE "elves_1" ("x", "y") AS (
   FROM "elves_1" AS "elves_2"
   UNION ALL
   SELECT
-    (CASE WHEN (NOT "elves_11"."blocked") THEN "elves_11"."next_x" ELSE "elves_11"."x" END) AS "x",
-    (CASE WHEN (NOT "elves_11"."blocked") THEN "elves_11"."next_y" ELSE "elves_11"."y" END) AS "y",
-    ("elves_11"."t" + 1) AS "t"
+    (CASE WHEN (NOT "__12"."blocked") THEN "__12"."next_x" ELSE "__12"."x" END) AS "x",
+    (CASE WHEN (NOT "__12"."blocked") THEN "__12"."next_y" ELSE "__12"."y" END) AS "y",
+    ("__12"."t" + 1) AS "t"
   FROM (
     SELECT
-      ((count(*) OVER (PARTITION BY "elves_10"."next_x", "elves_10"."next_y")) > 1) AS "blocked",
-      "elves_10"."next_x",
-      "elves_10"."x",
-      "elves_10"."next_y",
-      "elves_10"."y",
-      "elves_10"."t"
+      ((count(*) OVER (PARTITION BY "__11"."next_x", "__11"."next_y")) > 1) AS "blocked",
+      "__11"."next_x",
+      "__11"."x",
+      "__11"."next_y",
+      "__11"."y",
+      "__11"."t"
     FROM (
       SELECT
-        (CASE WHEN (("elves_9"."t" % 4) = 1) THEN coalesce("elves_9"."xn", "elves_9"."xs", "elves_9"."xw", "elves_9"."xe", "elves_9"."x") WHEN (("elves_9"."t" % 4) = 2) THEN coalesce("elves_9"."xs", "elves_9"."xw", "elves_9"."xe", "elves_9"."xn", "elves_9"."x") WHEN (("elves_9"."t" % 4) = 3) THEN coalesce("elves_9"."xw", "elves_9"."xe", "elves_9"."xn", "elves_9"."xs", "elves_9"."x") ELSE coalesce("elves_9"."xe", "elves_9"."xn", "elves_9"."xs", "elves_9"."xw", "elves_9"."x") END) AS "next_x",
-        "elves_9"."x",
-        (CASE WHEN (("elves_9"."t" % 4) = 1) THEN coalesce("elves_9"."yn", "elves_9"."ys", "elves_9"."yw", "elves_9"."ye", "elves_9"."y") WHEN (("elves_9"."t" % 4) = 2) THEN coalesce("elves_9"."ys", "elves_9"."yw", "elves_9"."ye", "elves_9"."yn", "elves_9"."y") WHEN (("elves_9"."t" % 4) = 3) THEN coalesce("elves_9"."yw", "elves_9"."ye", "elves_9"."yn", "elves_9"."ys", "elves_9"."y") ELSE coalesce("elves_9"."ye", "elves_9"."yn", "elves_9"."ys", "elves_9"."yw", "elves_9"."y") END) AS "next_y",
-        "elves_9"."y",
-        "elves_9"."t"
+        (CASE WHEN (("__10"."t" % 4) = 1) THEN coalesce("__10"."xn", "__10"."xs", "__10"."xw", "__10"."xe", "__10"."x") WHEN (("__10"."t" % 4) = 2) THEN coalesce("__10"."xs", "__10"."xw", "__10"."xe", "__10"."xn", "__10"."x") WHEN (("__10"."t" % 4) = 3) THEN coalesce("__10"."xw", "__10"."xe", "__10"."xn", "__10"."xs", "__10"."x") ELSE coalesce("__10"."xe", "__10"."xn", "__10"."xs", "__10"."xw", "__10"."x") END) AS "next_x",
+        "__10"."x",
+        (CASE WHEN (("__10"."t" % 4) = 1) THEN coalesce("__10"."yn", "__10"."ys", "__10"."yw", "__10"."ye", "__10"."y") WHEN (("__10"."t" % 4) = 2) THEN coalesce("__10"."ys", "__10"."yw", "__10"."ye", "__10"."yn", "__10"."y") WHEN (("__10"."t" % 4) = 3) THEN coalesce("__10"."yw", "__10"."ye", "__10"."yn", "__10"."ys", "__10"."y") ELSE coalesce("__10"."ye", "__10"."yn", "__10"."ys", "__10"."yw", "__10"."y") END) AS "next_y",
+        "__10"."y",
+        "__10"."t"
       FROM (
         SELECT
-          "elves_8"."x",
-          "elves_8"."y",
-          "elves_8"."t",
-          (CASE WHEN ("elves_8"."can_move_n" AND (NOT "elves_8"."alone")) THEN "elves_8"."x" END) AS "xn",
-          (CASE WHEN ("elves_8"."can_move_s" AND (NOT "elves_8"."alone")) THEN "elves_8"."x" END) AS "xs",
-          (CASE WHEN ("elves_8"."can_move_w" AND (NOT "elves_8"."alone")) THEN ("elves_8"."x" - 1) END) AS "xw",
-          (CASE WHEN ("elves_8"."can_move_e" AND (NOT "elves_8"."alone")) THEN ("elves_8"."x" + 1) END) AS "xe",
-          (CASE WHEN ("elves_8"."can_move_n" AND (NOT "elves_8"."alone")) THEN ("elves_8"."y" - 1) END) AS "yn",
-          (CASE WHEN ("elves_8"."can_move_s" AND (NOT "elves_8"."alone")) THEN ("elves_8"."y" + 1) END) AS "ys",
-          (CASE WHEN ("elves_8"."can_move_w" AND (NOT "elves_8"."alone")) THEN "elves_8"."y" END) AS "yw",
-          (CASE WHEN ("elves_8"."can_move_e" AND (NOT "elves_8"."alone")) THEN "elves_8"."y" END) AS "ye"
+          "__9"."x",
+          "__9"."y",
+          "__9"."t",
+          (CASE WHEN ("__9"."can_move_n" AND (NOT "__9"."alone")) THEN "__9"."x" END) AS "xn",
+          (CASE WHEN ("__9"."can_move_s" AND (NOT "__9"."alone")) THEN "__9"."x" END) AS "xs",
+          (CASE WHEN ("__9"."can_move_w" AND (NOT "__9"."alone")) THEN ("__9"."x" - 1) END) AS "xw",
+          (CASE WHEN ("__9"."can_move_e" AND (NOT "__9"."alone")) THEN ("__9"."x" + 1) END) AS "xe",
+          (CASE WHEN ("__9"."can_move_n" AND (NOT "__9"."alone")) THEN ("__9"."y" - 1) END) AS "yn",
+          (CASE WHEN ("__9"."can_move_s" AND (NOT "__9"."alone")) THEN ("__9"."y" + 1) END) AS "ys",
+          (CASE WHEN ("__9"."can_move_w" AND (NOT "__9"."alone")) THEN "__9"."y" END) AS "yw",
+          (CASE WHEN ("__9"."can_move_e" AND (NOT "__9"."alone")) THEN "__9"."y" END) AS "ye"
         FROM (
           SELECT
-            "elves_7"."x",
-            "elves_7"."y",
-            "elves_7"."t",
-            ("elves_7"."free_n" AND "elves_7"."free_ne" AND "elves_7"."free_nw") AS "can_move_n",
-            ("elves_7"."free_n" AND "elves_7"."free_ne" AND "elves_7"."free_e" AND "elves_7"."free_se" AND "elves_7"."free_s" AND "elves_7"."free_sw" AND "elves_7"."free_w" AND "elves_7"."free_nw") AS "alone",
-            ("elves_7"."free_s" AND "elves_7"."free_se" AND "elves_7"."free_sw") AS "can_move_s",
-            ("elves_7"."free_w" AND "elves_7"."free_nw" AND "elves_7"."free_sw") AS "can_move_w",
-            ("elves_7"."free_e" AND "elves_7"."free_ne" AND "elves_7"."free_se") AS "can_move_e"
+            "__8"."x",
+            "__8"."y",
+            "__8"."t",
+            ("__8"."free_n" AND "__8"."free_ne" AND "__8"."free_nw") AS "can_move_n",
+            ("__8"."free_n" AND "__8"."free_ne" AND "__8"."free_e" AND "__8"."free_se" AND "__8"."free_s" AND "__8"."free_sw" AND "__8"."free_w" AND "__8"."free_nw") AS "alone",
+            ("__8"."free_s" AND "__8"."free_se" AND "__8"."free_sw") AS "can_move_s",
+            ("__8"."free_w" AND "__8"."free_nw" AND "__8"."free_sw") AS "can_move_w",
+            ("__8"."free_e" AND "__8"."free_ne" AND "__8"."free_se") AS "can_move_e"
           FROM (
             SELECT
-              "elves_6"."x",
-              "elves_6"."y",
-              "elves_6"."t",
-              "elves_6"."free_n",
-              (coalesce((lead(("elves_6"."x" - "elves_6"."y")) OVER (PARTITION BY ("elves_6"."x" + "elves_6"."y") ORDER BY ("elves_6"."x" - "elves_6"."y"))), ("elves_6"."x" - "elves_6"."y")) <> (("elves_6"."x" - "elves_6"."y") + 2)) AS "free_ne",
-              "elves_6"."free_nw",
-              "elves_6"."free_e",
-              "elves_6"."free_se",
-              "elves_6"."free_s",
-              (coalesce((lag(("elves_6"."x" - "elves_6"."y")) OVER (PARTITION BY ("elves_6"."x" + "elves_6"."y") ORDER BY ("elves_6"."x" - "elves_6"."y"))), ("elves_6"."x" - "elves_6"."y")) <> (("elves_6"."x" - "elves_6"."y") - 2)) AS "free_sw",
-              "elves_6"."free_w"
+              "__7"."x",
+              "__7"."y",
+              "__7"."t",
+              "__7"."free_n",
+              (coalesce((lead(("__7"."x" - "__7"."y")) OVER (PARTITION BY ("__7"."x" + "__7"."y") ORDER BY ("__7"."x" - "__7"."y"))), ("__7"."x" - "__7"."y")) <> (("__7"."x" - "__7"."y") + 2)) AS "free_ne",
+              "__7"."free_e",
+              "__7"."free_se",
+              "__7"."free_s",
+              (coalesce((lag(("__7"."x" - "__7"."y")) OVER (PARTITION BY ("__7"."x" + "__7"."y") ORDER BY ("__7"."x" - "__7"."y"))), ("__7"."x" - "__7"."y")) <> (("__7"."x" - "__7"."y") - 2)) AS "free_sw",
+              "__7"."free_w",
+              "__7"."free_nw"
             FROM (
               SELECT
-                "elves_5"."x",
-                "elves_5"."y",
-                "elves_5"."t",
-                "elves_5"."free_n",
-                (coalesce((lag(("elves_5"."x" + "elves_5"."y")) OVER (PARTITION BY ("elves_5"."x" - "elves_5"."y") ORDER BY ("elves_5"."x" + "elves_5"."y"))), ("elves_5"."x" + "elves_5"."y")) <> (("elves_5"."x" + "elves_5"."y") - 2)) AS "free_nw",
-                "elves_5"."free_e",
-                (coalesce((lead(("elves_5"."x" + "elves_5"."y")) OVER (PARTITION BY ("elves_5"."x" - "elves_5"."y") ORDER BY ("elves_5"."x" + "elves_5"."y"))), ("elves_5"."x" + "elves_5"."y")) <> ("elves_5"."x" + "elves_5"."y" + 2)) AS "free_se",
-                "elves_5"."free_s",
-                "elves_5"."free_w"
+                "__6"."x",
+                "__6"."y",
+                "__6"."t",
+                "__6"."free_n",
+                "__6"."free_e",
+                (coalesce((lead(("__6"."x" + "__6"."y")) OVER (PARTITION BY ("__6"."x" - "__6"."y") ORDER BY ("__6"."x" + "__6"."y"))), ("__6"."x" + "__6"."y")) <> ("__6"."x" + "__6"."y" + 2)) AS "free_se",
+                "__6"."free_s",
+                "__6"."free_w",
+                (coalesce((lag(("__6"."x" + "__6"."y")) OVER (PARTITION BY ("__6"."x" - "__6"."y") ORDER BY ("__6"."x" + "__6"."y"))), ("__6"."x" + "__6"."y")) <> (("__6"."x" + "__6"."y") - 2)) AS "free_nw"
               FROM (
                 SELECT
-                  "elves_4"."x",
-                  "elves_4"."y",
-                  "elves_4"."t",
-                  "elves_4"."free_n",
-                  (coalesce((lead("elves_4"."x") OVER (PARTITION BY "elves_4"."y" ORDER BY "elves_4"."x")), "elves_4"."x") <> ("elves_4"."x" + 1)) AS "free_e",
-                  "elves_4"."free_s",
-                  (coalesce((lag("elves_4"."x") OVER (PARTITION BY "elves_4"."y" ORDER BY "elves_4"."x")), "elves_4"."x") <> ("elves_4"."x" - 1)) AS "free_w"
+                  "__5"."x",
+                  "__5"."y",
+                  "__5"."t",
+                  "__5"."free_n",
+                  (coalesce((lead("__5"."x") OVER (PARTITION BY "__5"."y" ORDER BY "__5"."x")), "__5"."x") <> ("__5"."x" + 1)) AS "free_e",
+                  "__5"."free_s",
+                  (coalesce((lag("__5"."x") OVER (PARTITION BY "__5"."y" ORDER BY "__5"."x")), "__5"."x") <> ("__5"."x" - 1)) AS "free_w"
                 FROM (
                   SELECT
-                    "elves_3"."x",
-                    "elves_3"."y",
-                    "elves_3"."t",
-                    (coalesce((lag("elves_3"."y") OVER (PARTITION BY "elves_3"."x" ORDER BY "elves_3"."y")), "elves_3"."y") <> ("elves_3"."y" - 1)) AS "free_n",
-                    (coalesce((lead("elves_3"."y") OVER (PARTITION BY "elves_3"."x" ORDER BY "elves_3"."y")), "elves_3"."y") <> ("elves_3"."y" + 1)) AS "free_s"
-                  FROM "__3" AS "elves_3"
-                  WHERE ("elves_3"."t" <= 10)
-                ) AS "elves_4"
-              ) AS "elves_5"
-            ) AS "elves_6"
-          ) AS "elves_7"
-        ) AS "elves_8"
-      ) AS "elves_9"
-    ) AS "elves_10"
-  ) AS "elves_11"
+                    "__4"."x",
+                    "__4"."y",
+                    "__4"."t",
+                    (coalesce((lag("__4"."y") OVER (PARTITION BY "__4"."x" ORDER BY "__4"."y")), "__4"."y") <> ("__4"."y" - 1)) AS "free_n",
+                    (coalesce((lead("__4"."y") OVER (PARTITION BY "__4"."x" ORDER BY "__4"."y")), "__4"."y") <> ("__4"."y" + 1)) AS "free_s"
+                  FROM "__3" AS "__4"
+                  WHERE ("__4"."t" <= 10)
+                ) AS "__5"
+              ) AS "__6"
+            ) AS "__7"
+          ) AS "__8"
+        ) AS "__9"
+      ) AS "__10"
+    ) AS "__11"
+  ) AS "__12"
 ),
-"__5" ("t", "x", "y") AS (
+"__15" ("t", "x", "y") AS (
   SELECT
     1 AS "t",
-    "elves_13"."x",
-    "elves_13"."y"
-  FROM "elves_1" AS "elves_13"
+    "elves_3"."x",
+    "elves_3"."y"
+  FROM "elves_1" AS "elves_3"
   UNION ALL
   SELECT
-    "elves_23"."t",
-    "elves_23"."x",
-    "elves_23"."y"
+    "__25"."t",
+    "__25"."x",
+    "__25"."y"
   FROM (
     SELECT
-      ("elves_22"."t" + 1) AS "t",
-      (CASE WHEN (NOT "elves_22"."blocked") THEN "elves_22"."next_x" ELSE "elves_22"."x" END) AS "x",
-      (CASE WHEN (NOT "elves_22"."blocked") THEN "elves_22"."next_y" ELSE "elves_22"."y" END) AS "y",
-      (bool_or((NOT "elves_22"."alone")) OVER ()) AS "bool_or"
+      ("__24"."t" + 1) AS "t",
+      (CASE WHEN (NOT "__24"."blocked") THEN "__24"."next_x" ELSE "__24"."x" END) AS "x",
+      (CASE WHEN (NOT "__24"."blocked") THEN "__24"."next_y" ELSE "__24"."y" END) AS "y",
+      (bool_or((NOT "__24"."alone")) OVER ()) AS "bool_or"
     FROM (
       SELECT
-        "elves_21"."alone",
-        "elves_21"."t",
-        ((count(*) OVER (PARTITION BY "elves_21"."next_x", "elves_21"."next_y")) > 1) AS "blocked",
-        "elves_21"."next_x",
-        "elves_21"."x",
-        "elves_21"."next_y",
-        "elves_21"."y"
+        "__23"."alone",
+        ((count(*) OVER (PARTITION BY "__23"."next_x", "__23"."next_y")) > 1) AS "blocked",
+        "__23"."next_x",
+        "__23"."x",
+        "__23"."next_y",
+        "__23"."y",
+        "__23"."t"
       FROM (
         SELECT
-          "elves_20"."alone",
-          "elves_20"."t",
-          (CASE WHEN (("elves_20"."t" % 4) = 1) THEN coalesce("elves_20"."xn", "elves_20"."xs", "elves_20"."xw", "elves_20"."xe", "elves_20"."x") WHEN (("elves_20"."t" % 4) = 2) THEN coalesce("elves_20"."xs", "elves_20"."xw", "elves_20"."xe", "elves_20"."xn", "elves_20"."x") WHEN (("elves_20"."t" % 4) = 3) THEN coalesce("elves_20"."xw", "elves_20"."xe", "elves_20"."xn", "elves_20"."xs", "elves_20"."x") ELSE coalesce("elves_20"."xe", "elves_20"."xn", "elves_20"."xs", "elves_20"."xw", "elves_20"."x") END) AS "next_x",
-          "elves_20"."x",
-          (CASE WHEN (("elves_20"."t" % 4) = 1) THEN coalesce("elves_20"."yn", "elves_20"."ys", "elves_20"."yw", "elves_20"."ye", "elves_20"."y") WHEN (("elves_20"."t" % 4) = 2) THEN coalesce("elves_20"."ys", "elves_20"."yw", "elves_20"."ye", "elves_20"."yn", "elves_20"."y") WHEN (("elves_20"."t" % 4) = 3) THEN coalesce("elves_20"."yw", "elves_20"."ye", "elves_20"."yn", "elves_20"."ys", "elves_20"."y") ELSE coalesce("elves_20"."ye", "elves_20"."yn", "elves_20"."ys", "elves_20"."yw", "elves_20"."y") END) AS "next_y",
-          "elves_20"."y"
+          "__22"."alone",
+          (CASE WHEN (("__22"."t" % 4) = 1) THEN coalesce("__22"."xn", "__22"."xs", "__22"."xw", "__22"."xe", "__22"."x") WHEN (("__22"."t" % 4) = 2) THEN coalesce("__22"."xs", "__22"."xw", "__22"."xe", "__22"."xn", "__22"."x") WHEN (("__22"."t" % 4) = 3) THEN coalesce("__22"."xw", "__22"."xe", "__22"."xn", "__22"."xs", "__22"."x") ELSE coalesce("__22"."xe", "__22"."xn", "__22"."xs", "__22"."xw", "__22"."x") END) AS "next_x",
+          "__22"."x",
+          (CASE WHEN (("__22"."t" % 4) = 1) THEN coalesce("__22"."yn", "__22"."ys", "__22"."yw", "__22"."ye", "__22"."y") WHEN (("__22"."t" % 4) = 2) THEN coalesce("__22"."ys", "__22"."yw", "__22"."ye", "__22"."yn", "__22"."y") WHEN (("__22"."t" % 4) = 3) THEN coalesce("__22"."yw", "__22"."ye", "__22"."yn", "__22"."ys", "__22"."y") ELSE coalesce("__22"."ye", "__22"."yn", "__22"."ys", "__22"."yw", "__22"."y") END) AS "next_y",
+          "__22"."y",
+          "__22"."t"
         FROM (
           SELECT
-            "elves_19"."alone",
-            "elves_19"."t",
-            "elves_19"."x",
-            "elves_19"."y",
-            (CASE WHEN ("elves_19"."can_move_n" AND (NOT "elves_19"."alone")) THEN "elves_19"."x" END) AS "xn",
-            (CASE WHEN ("elves_19"."can_move_s" AND (NOT "elves_19"."alone")) THEN "elves_19"."x" END) AS "xs",
-            (CASE WHEN ("elves_19"."can_move_w" AND (NOT "elves_19"."alone")) THEN ("elves_19"."x" - 1) END) AS "xw",
-            (CASE WHEN ("elves_19"."can_move_e" AND (NOT "elves_19"."alone")) THEN ("elves_19"."x" + 1) END) AS "xe",
-            (CASE WHEN ("elves_19"."can_move_n" AND (NOT "elves_19"."alone")) THEN ("elves_19"."y" - 1) END) AS "yn",
-            (CASE WHEN ("elves_19"."can_move_s" AND (NOT "elves_19"."alone")) THEN ("elves_19"."y" + 1) END) AS "ys",
-            (CASE WHEN ("elves_19"."can_move_w" AND (NOT "elves_19"."alone")) THEN "elves_19"."y" END) AS "yw",
-            (CASE WHEN ("elves_19"."can_move_e" AND (NOT "elves_19"."alone")) THEN "elves_19"."y" END) AS "ye"
+            "__21"."alone",
+            "__21"."x",
+            "__21"."y",
+            "__21"."t",
+            (CASE WHEN ("__21"."can_move_n" AND (NOT "__21"."alone")) THEN "__21"."x" END) AS "xn",
+            (CASE WHEN ("__21"."can_move_s" AND (NOT "__21"."alone")) THEN "__21"."x" END) AS "xs",
+            (CASE WHEN ("__21"."can_move_w" AND (NOT "__21"."alone")) THEN ("__21"."x" - 1) END) AS "xw",
+            (CASE WHEN ("__21"."can_move_e" AND (NOT "__21"."alone")) THEN ("__21"."x" + 1) END) AS "xe",
+            (CASE WHEN ("__21"."can_move_n" AND (NOT "__21"."alone")) THEN ("__21"."y" - 1) END) AS "yn",
+            (CASE WHEN ("__21"."can_move_s" AND (NOT "__21"."alone")) THEN ("__21"."y" + 1) END) AS "ys",
+            (CASE WHEN ("__21"."can_move_w" AND (NOT "__21"."alone")) THEN "__21"."y" END) AS "yw",
+            (CASE WHEN ("__21"."can_move_e" AND (NOT "__21"."alone")) THEN "__21"."y" END) AS "ye"
           FROM (
             SELECT
-              ("elves_18"."free_n" AND "elves_18"."free_ne" AND "elves_18"."free_e" AND "elves_18"."free_se" AND "elves_18"."free_s" AND "elves_18"."free_sw" AND "elves_18"."free_w" AND "elves_18"."free_nw") AS "alone",
-              "elves_18"."t",
-              "elves_18"."x",
-              "elves_18"."y",
-              ("elves_18"."free_n" AND "elves_18"."free_ne" AND "elves_18"."free_nw") AS "can_move_n",
-              ("elves_18"."free_s" AND "elves_18"."free_se" AND "elves_18"."free_sw") AS "can_move_s",
-              ("elves_18"."free_w" AND "elves_18"."free_nw" AND "elves_18"."free_sw") AS "can_move_w",
-              ("elves_18"."free_e" AND "elves_18"."free_ne" AND "elves_18"."free_se") AS "can_move_e"
+              ("__20"."free_n" AND "__20"."free_ne" AND "__20"."free_e" AND "__20"."free_se" AND "__20"."free_s" AND "__20"."free_sw" AND "__20"."free_w" AND "__20"."free_nw") AS "alone",
+              "__20"."x",
+              "__20"."y",
+              "__20"."t",
+              ("__20"."free_n" AND "__20"."free_ne" AND "__20"."free_nw") AS "can_move_n",
+              ("__20"."free_s" AND "__20"."free_se" AND "__20"."free_sw") AS "can_move_s",
+              ("__20"."free_w" AND "__20"."free_nw" AND "__20"."free_sw") AS "can_move_w",
+              ("__20"."free_e" AND "__20"."free_ne" AND "__20"."free_se") AS "can_move_e"
             FROM (
               SELECT
-                "elves_17"."t",
-                "elves_17"."x",
-                "elves_17"."y",
-                "elves_17"."free_n",
-                (coalesce((lead(("elves_17"."x" - "elves_17"."y")) OVER (PARTITION BY ("elves_17"."x" + "elves_17"."y") ORDER BY ("elves_17"."x" - "elves_17"."y"))), ("elves_17"."x" - "elves_17"."y")) <> (("elves_17"."x" - "elves_17"."y") + 2)) AS "free_ne",
-                "elves_17"."free_e",
-                "elves_17"."free_se",
-                "elves_17"."free_s",
-                (coalesce((lag(("elves_17"."x" - "elves_17"."y")) OVER (PARTITION BY ("elves_17"."x" + "elves_17"."y") ORDER BY ("elves_17"."x" - "elves_17"."y"))), ("elves_17"."x" - "elves_17"."y")) <> (("elves_17"."x" - "elves_17"."y") - 2)) AS "free_sw",
-                "elves_17"."free_w",
-                "elves_17"."free_nw"
+                "__19"."x",
+                "__19"."y",
+                "__19"."t",
+                "__19"."free_n",
+                (coalesce((lead(("__19"."x" - "__19"."y")) OVER (PARTITION BY ("__19"."x" + "__19"."y") ORDER BY ("__19"."x" - "__19"."y"))), ("__19"."x" - "__19"."y")) <> (("__19"."x" - "__19"."y") + 2)) AS "free_ne",
+                "__19"."free_e",
+                "__19"."free_se",
+                "__19"."free_s",
+                (coalesce((lag(("__19"."x" - "__19"."y")) OVER (PARTITION BY ("__19"."x" + "__19"."y") ORDER BY ("__19"."x" - "__19"."y"))), ("__19"."x" - "__19"."y")) <> (("__19"."x" - "__19"."y") - 2)) AS "free_sw",
+                "__19"."free_w",
+                "__19"."free_nw"
               FROM (
                 SELECT
-                  "elves_16"."t",
-                  "elves_16"."x",
-                  "elves_16"."y",
-                  "elves_16"."free_n",
-                  "elves_16"."free_e",
-                  (coalesce((lead(("elves_16"."x" + "elves_16"."y")) OVER (PARTITION BY ("elves_16"."x" - "elves_16"."y") ORDER BY ("elves_16"."x" + "elves_16"."y"))), ("elves_16"."x" + "elves_16"."y")) <> ("elves_16"."x" + "elves_16"."y" + 2)) AS "free_se",
-                  "elves_16"."free_s",
-                  "elves_16"."free_w",
-                  (coalesce((lag(("elves_16"."x" + "elves_16"."y")) OVER (PARTITION BY ("elves_16"."x" - "elves_16"."y") ORDER BY ("elves_16"."x" + "elves_16"."y"))), ("elves_16"."x" + "elves_16"."y")) <> (("elves_16"."x" + "elves_16"."y") - 2)) AS "free_nw"
+                  "__18"."x",
+                  "__18"."y",
+                  "__18"."t",
+                  "__18"."free_n",
+                  "__18"."free_e",
+                  (coalesce((lead(("__18"."x" + "__18"."y")) OVER (PARTITION BY ("__18"."x" - "__18"."y") ORDER BY ("__18"."x" + "__18"."y"))), ("__18"."x" + "__18"."y")) <> ("__18"."x" + "__18"."y" + 2)) AS "free_se",
+                  "__18"."free_s",
+                  "__18"."free_w",
+                  (coalesce((lag(("__18"."x" + "__18"."y")) OVER (PARTITION BY ("__18"."x" - "__18"."y") ORDER BY ("__18"."x" + "__18"."y"))), ("__18"."x" + "__18"."y")) <> (("__18"."x" + "__18"."y") - 2)) AS "free_nw"
                 FROM (
                   SELECT
-                    "elves_15"."t",
-                    "elves_15"."x",
-                    "elves_15"."y",
-                    "elves_15"."free_n",
-                    (coalesce((lead("elves_15"."x") OVER (PARTITION BY "elves_15"."y" ORDER BY "elves_15"."x")), "elves_15"."x") <> ("elves_15"."x" + 1)) AS "free_e",
-                    "elves_15"."free_s",
-                    (coalesce((lag("elves_15"."x") OVER (PARTITION BY "elves_15"."y" ORDER BY "elves_15"."x")), "elves_15"."x") <> ("elves_15"."x" - 1)) AS "free_w"
+                    "__17"."x",
+                    "__17"."y",
+                    "__17"."t",
+                    "__17"."free_n",
+                    (coalesce((lead("__17"."x") OVER (PARTITION BY "__17"."y" ORDER BY "__17"."x")), "__17"."x") <> ("__17"."x" + 1)) AS "free_e",
+                    "__17"."free_s",
+                    (coalesce((lag("__17"."x") OVER (PARTITION BY "__17"."y" ORDER BY "__17"."x")), "__17"."x") <> ("__17"."x" - 1)) AS "free_w"
                   FROM (
                     SELECT
-                      "elves_14"."t",
-                      "elves_14"."x",
-                      "elves_14"."y",
-                      (coalesce((lag("elves_14"."y") OVER (PARTITION BY "elves_14"."x" ORDER BY "elves_14"."y")), "elves_14"."y") <> ("elves_14"."y" - 1)) AS "free_n",
-                      (coalesce((lead("elves_14"."y") OVER (PARTITION BY "elves_14"."x" ORDER BY "elves_14"."y")), "elves_14"."y") <> ("elves_14"."y" + 1)) AS "free_s"
-                    FROM "__5" AS "elves_14"
-                  ) AS "elves_15"
-                ) AS "elves_16"
-              ) AS "elves_17"
-            ) AS "elves_18"
-          ) AS "elves_19"
-        ) AS "elves_20"
-      ) AS "elves_21"
-    ) AS "elves_22"
-  ) AS "elves_23"
-  WHERE "elves_23"."bool_or"
+                      "__16"."x",
+                      "__16"."y",
+                      "__16"."t",
+                      (coalesce((lag("__16"."y") OVER (PARTITION BY "__16"."x" ORDER BY "__16"."y")), "__16"."y") <> ("__16"."y" - 1)) AS "free_n",
+                      (coalesce((lead("__16"."y") OVER (PARTITION BY "__16"."x" ORDER BY "__16"."y")), "__16"."y") <> ("__16"."y" + 1)) AS "free_s"
+                    FROM "__15" AS "__16"
+                  ) AS "__17"
+                ) AS "__18"
+              ) AS "__19"
+            ) AS "__20"
+          ) AS "__21"
+        ) AS "__22"
+      ) AS "__23"
+    ) AS "__24"
+  ) AS "__25"
+  WHERE "__25"."bool_or"
 )
 SELECT
-  "elves_12"."part1",
-  "elves_24"."part2"
+  "__14"."part1",
+  "__27"."part2"
 FROM (
-  SELECT ((((max("__4"."x") - min("__4"."x")) + 1) * ((max("__4"."y") - min("__4"."y")) + 1)) - count(*)) AS "part1"
-  FROM "__3" AS "__4"
-  WHERE ("__4"."t" = 11)
-) AS "elves_12"
+  SELECT ((((max("__13"."x") - min("__13"."x")) + 1) * ((max("__13"."y") - min("__13"."y")) + 1)) - count(*)) AS "part1"
+  FROM "__3" AS "__13"
+  WHERE ("__13"."t" = 11)
+) AS "__14"
 CROSS JOIN (
-  SELECT max("__6"."t") AS "part2"
-  FROM "__5" AS "__6"
-) AS "elves_24"
+  SELECT max("__26"."t") AS "part2"
+  FROM "__15" AS "__26"
+) AS "__27"

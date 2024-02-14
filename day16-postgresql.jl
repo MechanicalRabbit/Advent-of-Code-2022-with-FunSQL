@@ -12,16 +12,17 @@ DBInterface.prepare(conn::LibPQ.Connection, args...; kws...) =
 DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws...) =
     LibPQ.execute(conn, args...; kws...)
 
+const var"funsql_&" = FunSQL.Fun."&"
+const var"funsql_|" = FunSQL.Fun."|"
+const var"funsql_<<" = FunSQL.Fun."<<"
+const funsql_array_get = FunSQL.Fun."?[?]"
+const funsql_as_integer = FunSQL.Fun."(?::integer)"
+const funsql_least = FunSQL.Fun.least
+const funsql_regexp_matches = FunSQL.Fun.regexp_matches
+const funsql_string_to_table = FunSQL.Fun.string_to_table
+const funsql_with_ordinality = FunSQL.Fun."? WITH ORDINALITY"
+
 @funsql begin
-
-with_ordinality(q) =
-    `? WITH ORDINALITY`($q)
-
-array_get(a, i) =
-    `?[?]`($a, $i)
-
-as_integer(str) =
-    `(?::integer)`($str)
 
 parse_valves() =
     begin
@@ -34,7 +35,7 @@ parse_valves() =
             rate => as_integer(array_get(captures, 2)))
         partition(order_by = [index])
         define(
-            mask => case(rate > 0, 1 << as_integer(count[filter = rate > 0])))
+            mask => case(rate > 0, 1 << as_integer(count(filter = rate > 0))))
     end
 
 parse_tunnels() =
@@ -55,9 +56,9 @@ calculate_distances_step() =
         define(index => index + 1)
         join(curr => from(valves), index == curr.index)
         partition(src)
-        define(src_to_curr => min[dist, filter = dst == curr.valve])
+        define(src_to_curr => min(dist, filter = dst == curr.valve))
         partition(dst)
-        define(curr_to_dst => min[dist, filter = src == curr.valve])
+        define(curr_to_dst => min(dist, filter = src == curr.valve))
         define(dist => least(dist, src_to_curr + curr_to_dst))
     end
 
@@ -71,7 +72,7 @@ calculate_distances() =
             index => 0)
         iterate(calculate_distances_step())
         group(src, dst)
-        define(dist => min[dist])
+        define(dist => min(dist))
     end
 
 solve_step(T) =
@@ -87,7 +88,7 @@ solve_step(T) =
         filter(t <= $T)
         define(total => total + rate * ($T - t + 1))
         group(t, curr, opened)
-        define(total => max[total])
+        define(total => max(total))
     end
 
 solve_part1() =
@@ -99,12 +100,15 @@ solve_part1() =
             total => 0)
         iterate(solve_step(30))
         group()
-        define(part1 => max[total])
+        define(part1 => max(total))
     end
 
 solve_part2() =
-    let totals =
-            begin
+    begin
+        from(totals)
+        join(other => from(totals), opened & other.opened == 0)
+        with(
+            totals => begin
                 define(
                     t => 1,
                     curr => "AA",
@@ -112,19 +116,19 @@ solve_part2() =
                     total => 0)
                 iterate(solve_step(26))
                 group(opened)
-                define(total => max[total])
-            end
-        from(totals)
-        join(other => from(totals), opened & other.opened == 0)
+                define(total => max(total))
+            end)
         group()
-        define(part2 => max[total + other.total])
+        define(part2 => max(total + other.total))
     end
 
 solve_all() =
-    let valves = parse_valves(),
-        tunnels = parse_tunnels(),
-        distances = calculate_distances()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(distances => calculate_distances())
+        with(
+            valves => parse_valves(),
+            tunnels => parse_tunnels())
     end
 
 const q = solve_all()

@@ -12,16 +12,15 @@ DBInterface.prepare(conn::LibPQ.Connection, args...; kws...) =
 DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws...) =
     LibPQ.execute(conn, args...; kws...)
 
+const funsql_array_get = FunSQL.Fun."?[?]"
+const funsql_as_integer = FunSQL.Fun."(?::integer)"
+const funsql_greatest = FunSQL.Fun.greatest
+const funsql_least = FunSQL.Fun.least
+const funsql_regexp_matches = FunSQL.Fun.regexp_matches
+const funsql_string_to_table = FunSQL.Fun.string_to_table
+const funsql_with_ordinality = FunSQL.Fun."? WITH ORDINALITY"
+
 @funsql begin
-
-with_ordinality(q) =
-    `? WITH ORDINALITY`($q)
-
-array_get(a, i) =
-    `?[?]`($a, $i)
-
-as_integer(str) =
-    `(?::integer)`($str)
 
 parse_segments() =
     begin
@@ -38,8 +37,8 @@ parse_segments() =
         partition(path_index, order_by = [point_index])
         filter(point_index > 1)
         define(
-            prev_x => lag[x],
-            prev_y => lag[y])
+            prev_x => lag(x),
+            prev_y => lag(y))
         define(
             x1 => least(x, prev_x),
             x2 => greatest(x, prev_x),
@@ -59,7 +58,7 @@ max_y() =
     begin
         from(segments)
         group()
-        define(max_y => max[y2] + 1)
+        define(max_y => max(y2) + 1)
     end
 
 reachable_step() =
@@ -139,22 +138,23 @@ solve_part1() =
         iterate(resting_step())
         filter(!is_fallthrough(x, y))
         group()
-        define(part1 => count[])
+        define(part1 => count())
     end
 
 solve_part2() =
     begin
         from(reachable)
         group()
-        define(part2 => count[])
+        define(part2 => count())
     end
 
 solve_all() =
-    let segments = parse_segments(),
-        max_y = max_y(),
-        reachable = reachable(),
-        fallthrough = fallthrough()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(fallthrough => fallthrough())
+        with(reachable => reachable())
+        with(max_y => max_y())
+        with(segments => parse_segments())
     end
 
 const q = solve_all()

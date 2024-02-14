@@ -1,6 +1,12 @@
 using FunSQL
 using SQLite
 
+const funsql_as_integer = FunSQL.Fun."CAST(? AS INTEGER)"
+const funsql_group_concat = FunSQL.Agg.group_concat
+const funsql_instr = FunSQL.Fun.instr
+const funsql_mod = FunSQL.Fun.mod
+const funsql_substr = FunSQL.Fun.substr
+
 @funsql begin
 
 split_first(text, sep = "\n") =
@@ -10,7 +16,7 @@ split_rest(text, sep = "\n") =
     instr($text, $sep) > 0 ? substr($text, instr($text, $sep) + $(length(sep))) : ""
 
 addx(line) =
-    `CAST(? AS INTEGER)`(substr($line, 6))
+    as_integer(substr($line, 6))
 
 split_one_instruction() =
     begin
@@ -39,8 +45,8 @@ expand_cycles() =
             order_by = [ip, tick],
             frame = (mode = rows, start = -Inf, finish = -1))
         define(
-            cycle => 1 + coalesce(count[], 0),
-            x => 1 + sum[addx * tick])
+            cycle => 1 + coalesce(count(), 0),
+            x => 1 + sum(addx * tick))
     end
 
 solve_part1() =
@@ -48,7 +54,7 @@ solve_part1() =
         from(cycles)
         filter(mod(cycle + 20, 40) == 0)
         group()
-        define(part1 => sum[x * cycle])
+        define(part1 => sum(x * cycle))
     end
 
 solve_part2() =
@@ -60,15 +66,16 @@ solve_part2() =
         define(pixel => between(col, x, x + 2) ? "#" : ".")
         order(row, col)
         group(row)
-        define(line => group_concat[pixel, ""])
+        define(line => group_concat(pixel, ""))
         order(row)
         group()
-        define(part2 => group_concat[line, "\n"])
+        define(part2 => group_concat(line, "\n"))
     end
 
 solve_all() =
-    let cycles = expand_cycles()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(cycles => expand_cycles())
     end
 
 const q = solve_all()

@@ -59,11 +59,11 @@ WITH RECURSIVE "__1" ("dx", "dy", "motion", "length", "rest") AS (
   FROM "__4" AS "__5"
   WHERE ("__5"."step" < "__5"."length")
 ),
-"heads_1" ("index", "x", "y") AS (
+"heads_1" ("x", "y", "index") AS (
   SELECT
-    (count(*) OVER (ORDER BY "__6"."motion", "__6"."step")) AS "index",
     (sum("__6"."dx") OVER (ORDER BY "__6"."motion", "__6"."step")) AS "x",
-    (sum("__6"."dy") OVER (ORDER BY "__6"."motion", "__6"."step")) AS "y"
+    (sum("__6"."dy") OVER (ORDER BY "__6"."motion", "__6"."step")) AS "y",
+    (count(*) OVER (ORDER BY "__6"."motion", "__6"."step")) AS "index"
   FROM "__4" AS "__6"
 ),
 "__8" ("x", "y", "index") AS (
@@ -73,9 +73,9 @@ WITH RECURSIVE "__1" ("dx", "dy", "motion", "length", "rest") AS (
     ("__7"."index" + 1) AS "index"
   FROM (
     SELECT
+      0 AS "index",
       0 AS "x",
-      0 AS "y",
-      0 AS "index"
+      0 AS "y"
   ) AS "__7"
   JOIN "heads_1" AS "heads_2" ON (("__7"."index" + 1) = "heads_2"."index")
   UNION ALL
@@ -86,11 +86,11 @@ WITH RECURSIVE "__1" ("dx", "dy", "motion", "length", "rest") AS (
   FROM "__8" AS "__9"
   JOIN "heads_1" AS "heads_3" ON (("__9"."index" + 1) = "heads_3"."index")
 ),
-"__14" ("index", "x", "y") AS (
+"__14" ("x", "y", "index") AS (
   SELECT
-    ("__13"."index" + 1) AS "index",
     ("__13"."x" + (CASE WHEN ((abs(("heads_4"."x" - "__13"."x")) > 1) OR (abs(("heads_4"."y" - "__13"."y")) > 1)) THEN sign(("heads_4"."x" - "__13"."x")) ELSE 0 END)) AS "x",
-    ("__13"."y" + (CASE WHEN ((abs(("heads_4"."x" - "__13"."x")) > 1) OR (abs(("heads_4"."y" - "__13"."y")) > 1)) THEN sign(("heads_4"."y" - "__13"."y")) ELSE 0 END)) AS "y"
+    ("__13"."y" + (CASE WHEN ((abs(("heads_4"."x" - "__13"."x")) > 1) OR (abs(("heads_4"."y" - "__13"."y")) > 1)) THEN sign(("heads_4"."y" - "__13"."y")) ELSE 0 END)) AS "y",
+    ("__13"."index" + 1) AS "index"
   FROM (
     SELECT
       0 AS "index",
@@ -100,24 +100,24 @@ WITH RECURSIVE "__1" ("dx", "dy", "motion", "length", "rest") AS (
   JOIN "heads_1" AS "heads_4" ON (("__13"."index" + 1) = "heads_4"."index")
   UNION ALL
   SELECT
-    ("__15"."index" + 1) AS "index",
     ("__15"."x" + (CASE WHEN ((abs(("heads_5"."x" - "__15"."x")) > 1) OR (abs(("heads_5"."y" - "__15"."y")) > 1)) THEN sign(("heads_5"."x" - "__15"."x")) ELSE 0 END)) AS "x",
-    ("__15"."y" + (CASE WHEN ((abs(("heads_5"."x" - "__15"."x")) > 1) OR (abs(("heads_5"."y" - "__15"."y")) > 1)) THEN sign(("heads_5"."y" - "__15"."y")) ELSE 0 END)) AS "y"
+    ("__15"."y" + (CASE WHEN ((abs(("heads_5"."x" - "__15"."x")) > 1) OR (abs(("heads_5"."y" - "__15"."y")) > 1)) THEN sign(("heads_5"."y" - "__15"."y")) ELSE 0 END)) AS "y",
+    ("__15"."index" + 1) AS "index"
   FROM "__14" AS "__15"
   JOIN "heads_1" AS "heads_5" ON (("__15"."index" + 1) = "heads_5"."index")
 ),
-"heads_6" ("index", "x", "y") AS (
+"heads_6" ("x", "y", "index") AS (
   SELECT
-    "__16"."index",
     "__16"."x",
-    "__16"."y"
+    "__16"."y",
+    "__16"."index"
   FROM "__14" AS "__16"
 ),
-"__18" ("index", "x", "y") AS (
+"__18" ("x", "y", "index") AS (
   SELECT
-    ("__17"."index" + 1) AS "index",
     ("__17"."x" + (CASE WHEN ((abs(("heads_7"."x" - "__17"."x")) > 1) OR (abs(("heads_7"."y" - "__17"."y")) > 1)) THEN sign(("heads_7"."x" - "__17"."x")) ELSE 0 END)) AS "x",
-    ("__17"."y" + (CASE WHEN ((abs(("heads_7"."x" - "__17"."x")) > 1) OR (abs(("heads_7"."y" - "__17"."y")) > 1)) THEN sign(("heads_7"."y" - "__17"."y")) ELSE 0 END)) AS "y"
+    ("__17"."y" + (CASE WHEN ((abs(("heads_7"."x" - "__17"."x")) > 1) OR (abs(("heads_7"."y" - "__17"."y")) > 1)) THEN sign(("heads_7"."y" - "__17"."y")) ELSE 0 END)) AS "y",
+    ("__17"."index" + 1) AS "index"
   FROM (
     SELECT
       0 AS "index",
@@ -127,24 +127,24 @@ WITH RECURSIVE "__1" ("dx", "dy", "motion", "length", "rest") AS (
   JOIN "heads_6" AS "heads_7" ON (("__17"."index" + 1) = "heads_7"."index")
   UNION ALL
   SELECT
-    ("__19"."index" + 1) AS "index",
     ("__19"."x" + (CASE WHEN ((abs(("heads_8"."x" - "__19"."x")) > 1) OR (abs(("heads_8"."y" - "__19"."y")) > 1)) THEN sign(("heads_8"."x" - "__19"."x")) ELSE 0 END)) AS "x",
-    ("__19"."y" + (CASE WHEN ((abs(("heads_8"."x" - "__19"."x")) > 1) OR (abs(("heads_8"."y" - "__19"."y")) > 1)) THEN sign(("heads_8"."y" - "__19"."y")) ELSE 0 END)) AS "y"
+    ("__19"."y" + (CASE WHEN ((abs(("heads_8"."x" - "__19"."x")) > 1) OR (abs(("heads_8"."y" - "__19"."y")) > 1)) THEN sign(("heads_8"."y" - "__19"."y")) ELSE 0 END)) AS "y",
+    ("__19"."index" + 1) AS "index"
   FROM "__18" AS "__19"
   JOIN "heads_6" AS "heads_8" ON (("__19"."index" + 1) = "heads_8"."index")
 ),
-"heads_9" ("index", "x", "y") AS (
+"heads_9" ("x", "y", "index") AS (
   SELECT
-    "__20"."index",
     "__20"."x",
-    "__20"."y"
+    "__20"."y",
+    "__20"."index"
   FROM "__18" AS "__20"
 ),
-"__22" ("index", "x", "y") AS (
+"__22" ("x", "y", "index") AS (
   SELECT
-    ("__21"."index" + 1) AS "index",
     ("__21"."x" + (CASE WHEN ((abs(("heads_10"."x" - "__21"."x")) > 1) OR (abs(("heads_10"."y" - "__21"."y")) > 1)) THEN sign(("heads_10"."x" - "__21"."x")) ELSE 0 END)) AS "x",
-    ("__21"."y" + (CASE WHEN ((abs(("heads_10"."x" - "__21"."x")) > 1) OR (abs(("heads_10"."y" - "__21"."y")) > 1)) THEN sign(("heads_10"."y" - "__21"."y")) ELSE 0 END)) AS "y"
+    ("__21"."y" + (CASE WHEN ((abs(("heads_10"."x" - "__21"."x")) > 1) OR (abs(("heads_10"."y" - "__21"."y")) > 1)) THEN sign(("heads_10"."y" - "__21"."y")) ELSE 0 END)) AS "y",
+    ("__21"."index" + 1) AS "index"
   FROM (
     SELECT
       0 AS "index",
@@ -154,24 +154,24 @@ WITH RECURSIVE "__1" ("dx", "dy", "motion", "length", "rest") AS (
   JOIN "heads_9" AS "heads_10" ON (("__21"."index" + 1) = "heads_10"."index")
   UNION ALL
   SELECT
-    ("__23"."index" + 1) AS "index",
     ("__23"."x" + (CASE WHEN ((abs(("heads_11"."x" - "__23"."x")) > 1) OR (abs(("heads_11"."y" - "__23"."y")) > 1)) THEN sign(("heads_11"."x" - "__23"."x")) ELSE 0 END)) AS "x",
-    ("__23"."y" + (CASE WHEN ((abs(("heads_11"."x" - "__23"."x")) > 1) OR (abs(("heads_11"."y" - "__23"."y")) > 1)) THEN sign(("heads_11"."y" - "__23"."y")) ELSE 0 END)) AS "y"
+    ("__23"."y" + (CASE WHEN ((abs(("heads_11"."x" - "__23"."x")) > 1) OR (abs(("heads_11"."y" - "__23"."y")) > 1)) THEN sign(("heads_11"."y" - "__23"."y")) ELSE 0 END)) AS "y",
+    ("__23"."index" + 1) AS "index"
   FROM "__22" AS "__23"
   JOIN "heads_9" AS "heads_11" ON (("__23"."index" + 1) = "heads_11"."index")
 ),
-"heads_12" ("index", "x", "y") AS (
+"heads_12" ("x", "y", "index") AS (
   SELECT
-    "__24"."index",
     "__24"."x",
-    "__24"."y"
+    "__24"."y",
+    "__24"."index"
   FROM "__22" AS "__24"
 ),
-"__26" ("index", "x", "y") AS (
+"__26" ("x", "y", "index") AS (
   SELECT
-    ("__25"."index" + 1) AS "index",
     ("__25"."x" + (CASE WHEN ((abs(("heads_13"."x" - "__25"."x")) > 1) OR (abs(("heads_13"."y" - "__25"."y")) > 1)) THEN sign(("heads_13"."x" - "__25"."x")) ELSE 0 END)) AS "x",
-    ("__25"."y" + (CASE WHEN ((abs(("heads_13"."x" - "__25"."x")) > 1) OR (abs(("heads_13"."y" - "__25"."y")) > 1)) THEN sign(("heads_13"."y" - "__25"."y")) ELSE 0 END)) AS "y"
+    ("__25"."y" + (CASE WHEN ((abs(("heads_13"."x" - "__25"."x")) > 1) OR (abs(("heads_13"."y" - "__25"."y")) > 1)) THEN sign(("heads_13"."y" - "__25"."y")) ELSE 0 END)) AS "y",
+    ("__25"."index" + 1) AS "index"
   FROM (
     SELECT
       0 AS "index",
@@ -181,24 +181,24 @@ WITH RECURSIVE "__1" ("dx", "dy", "motion", "length", "rest") AS (
   JOIN "heads_12" AS "heads_13" ON (("__25"."index" + 1) = "heads_13"."index")
   UNION ALL
   SELECT
-    ("__27"."index" + 1) AS "index",
     ("__27"."x" + (CASE WHEN ((abs(("heads_14"."x" - "__27"."x")) > 1) OR (abs(("heads_14"."y" - "__27"."y")) > 1)) THEN sign(("heads_14"."x" - "__27"."x")) ELSE 0 END)) AS "x",
-    ("__27"."y" + (CASE WHEN ((abs(("heads_14"."x" - "__27"."x")) > 1) OR (abs(("heads_14"."y" - "__27"."y")) > 1)) THEN sign(("heads_14"."y" - "__27"."y")) ELSE 0 END)) AS "y"
+    ("__27"."y" + (CASE WHEN ((abs(("heads_14"."x" - "__27"."x")) > 1) OR (abs(("heads_14"."y" - "__27"."y")) > 1)) THEN sign(("heads_14"."y" - "__27"."y")) ELSE 0 END)) AS "y",
+    ("__27"."index" + 1) AS "index"
   FROM "__26" AS "__27"
   JOIN "heads_12" AS "heads_14" ON (("__27"."index" + 1) = "heads_14"."index")
 ),
-"heads_15" ("index", "x", "y") AS (
+"heads_15" ("x", "y", "index") AS (
   SELECT
-    "__28"."index",
     "__28"."x",
-    "__28"."y"
+    "__28"."y",
+    "__28"."index"
   FROM "__26" AS "__28"
 ),
-"__30" ("index", "x", "y") AS (
+"__30" ("x", "y", "index") AS (
   SELECT
-    ("__29"."index" + 1) AS "index",
     ("__29"."x" + (CASE WHEN ((abs(("heads_16"."x" - "__29"."x")) > 1) OR (abs(("heads_16"."y" - "__29"."y")) > 1)) THEN sign(("heads_16"."x" - "__29"."x")) ELSE 0 END)) AS "x",
-    ("__29"."y" + (CASE WHEN ((abs(("heads_16"."x" - "__29"."x")) > 1) OR (abs(("heads_16"."y" - "__29"."y")) > 1)) THEN sign(("heads_16"."y" - "__29"."y")) ELSE 0 END)) AS "y"
+    ("__29"."y" + (CASE WHEN ((abs(("heads_16"."x" - "__29"."x")) > 1) OR (abs(("heads_16"."y" - "__29"."y")) > 1)) THEN sign(("heads_16"."y" - "__29"."y")) ELSE 0 END)) AS "y",
+    ("__29"."index" + 1) AS "index"
   FROM (
     SELECT
       0 AS "index",
@@ -208,24 +208,24 @@ WITH RECURSIVE "__1" ("dx", "dy", "motion", "length", "rest") AS (
   JOIN "heads_15" AS "heads_16" ON (("__29"."index" + 1) = "heads_16"."index")
   UNION ALL
   SELECT
-    ("__31"."index" + 1) AS "index",
     ("__31"."x" + (CASE WHEN ((abs(("heads_17"."x" - "__31"."x")) > 1) OR (abs(("heads_17"."y" - "__31"."y")) > 1)) THEN sign(("heads_17"."x" - "__31"."x")) ELSE 0 END)) AS "x",
-    ("__31"."y" + (CASE WHEN ((abs(("heads_17"."x" - "__31"."x")) > 1) OR (abs(("heads_17"."y" - "__31"."y")) > 1)) THEN sign(("heads_17"."y" - "__31"."y")) ELSE 0 END)) AS "y"
+    ("__31"."y" + (CASE WHEN ((abs(("heads_17"."x" - "__31"."x")) > 1) OR (abs(("heads_17"."y" - "__31"."y")) > 1)) THEN sign(("heads_17"."y" - "__31"."y")) ELSE 0 END)) AS "y",
+    ("__31"."index" + 1) AS "index"
   FROM "__30" AS "__31"
   JOIN "heads_15" AS "heads_17" ON (("__31"."index" + 1) = "heads_17"."index")
 ),
-"heads_18" ("index", "x", "y") AS (
+"heads_18" ("x", "y", "index") AS (
   SELECT
-    "__32"."index",
     "__32"."x",
-    "__32"."y"
+    "__32"."y",
+    "__32"."index"
   FROM "__30" AS "__32"
 ),
-"__34" ("index", "x", "y") AS (
+"__34" ("x", "y", "index") AS (
   SELECT
-    ("__33"."index" + 1) AS "index",
     ("__33"."x" + (CASE WHEN ((abs(("heads_19"."x" - "__33"."x")) > 1) OR (abs(("heads_19"."y" - "__33"."y")) > 1)) THEN sign(("heads_19"."x" - "__33"."x")) ELSE 0 END)) AS "x",
-    ("__33"."y" + (CASE WHEN ((abs(("heads_19"."x" - "__33"."x")) > 1) OR (abs(("heads_19"."y" - "__33"."y")) > 1)) THEN sign(("heads_19"."y" - "__33"."y")) ELSE 0 END)) AS "y"
+    ("__33"."y" + (CASE WHEN ((abs(("heads_19"."x" - "__33"."x")) > 1) OR (abs(("heads_19"."y" - "__33"."y")) > 1)) THEN sign(("heads_19"."y" - "__33"."y")) ELSE 0 END)) AS "y",
+    ("__33"."index" + 1) AS "index"
   FROM (
     SELECT
       0 AS "index",
@@ -235,24 +235,24 @@ WITH RECURSIVE "__1" ("dx", "dy", "motion", "length", "rest") AS (
   JOIN "heads_18" AS "heads_19" ON (("__33"."index" + 1) = "heads_19"."index")
   UNION ALL
   SELECT
-    ("__35"."index" + 1) AS "index",
     ("__35"."x" + (CASE WHEN ((abs(("heads_20"."x" - "__35"."x")) > 1) OR (abs(("heads_20"."y" - "__35"."y")) > 1)) THEN sign(("heads_20"."x" - "__35"."x")) ELSE 0 END)) AS "x",
-    ("__35"."y" + (CASE WHEN ((abs(("heads_20"."x" - "__35"."x")) > 1) OR (abs(("heads_20"."y" - "__35"."y")) > 1)) THEN sign(("heads_20"."y" - "__35"."y")) ELSE 0 END)) AS "y"
+    ("__35"."y" + (CASE WHEN ((abs(("heads_20"."x" - "__35"."x")) > 1) OR (abs(("heads_20"."y" - "__35"."y")) > 1)) THEN sign(("heads_20"."y" - "__35"."y")) ELSE 0 END)) AS "y",
+    ("__35"."index" + 1) AS "index"
   FROM "__34" AS "__35"
   JOIN "heads_18" AS "heads_20" ON (("__35"."index" + 1) = "heads_20"."index")
 ),
-"heads_21" ("index", "x", "y") AS (
+"heads_21" ("x", "y", "index") AS (
   SELECT
-    "__36"."index",
     "__36"."x",
-    "__36"."y"
+    "__36"."y",
+    "__36"."index"
   FROM "__34" AS "__36"
 ),
-"__38" ("index", "x", "y") AS (
+"__38" ("x", "y", "index") AS (
   SELECT
-    ("__37"."index" + 1) AS "index",
     ("__37"."x" + (CASE WHEN ((abs(("heads_22"."x" - "__37"."x")) > 1) OR (abs(("heads_22"."y" - "__37"."y")) > 1)) THEN sign(("heads_22"."x" - "__37"."x")) ELSE 0 END)) AS "x",
-    ("__37"."y" + (CASE WHEN ((abs(("heads_22"."x" - "__37"."x")) > 1) OR (abs(("heads_22"."y" - "__37"."y")) > 1)) THEN sign(("heads_22"."y" - "__37"."y")) ELSE 0 END)) AS "y"
+    ("__37"."y" + (CASE WHEN ((abs(("heads_22"."x" - "__37"."x")) > 1) OR (abs(("heads_22"."y" - "__37"."y")) > 1)) THEN sign(("heads_22"."y" - "__37"."y")) ELSE 0 END)) AS "y",
+    ("__37"."index" + 1) AS "index"
   FROM (
     SELECT
       0 AS "index",
@@ -262,24 +262,24 @@ WITH RECURSIVE "__1" ("dx", "dy", "motion", "length", "rest") AS (
   JOIN "heads_21" AS "heads_22" ON (("__37"."index" + 1) = "heads_22"."index")
   UNION ALL
   SELECT
-    ("__39"."index" + 1) AS "index",
     ("__39"."x" + (CASE WHEN ((abs(("heads_23"."x" - "__39"."x")) > 1) OR (abs(("heads_23"."y" - "__39"."y")) > 1)) THEN sign(("heads_23"."x" - "__39"."x")) ELSE 0 END)) AS "x",
-    ("__39"."y" + (CASE WHEN ((abs(("heads_23"."x" - "__39"."x")) > 1) OR (abs(("heads_23"."y" - "__39"."y")) > 1)) THEN sign(("heads_23"."y" - "__39"."y")) ELSE 0 END)) AS "y"
+    ("__39"."y" + (CASE WHEN ((abs(("heads_23"."x" - "__39"."x")) > 1) OR (abs(("heads_23"."y" - "__39"."y")) > 1)) THEN sign(("heads_23"."y" - "__39"."y")) ELSE 0 END)) AS "y",
+    ("__39"."index" + 1) AS "index"
   FROM "__38" AS "__39"
   JOIN "heads_21" AS "heads_23" ON (("__39"."index" + 1) = "heads_23"."index")
 ),
-"heads_24" ("index", "x", "y") AS (
+"heads_24" ("x", "y", "index") AS (
   SELECT
-    "__40"."index",
     "__40"."x",
-    "__40"."y"
+    "__40"."y",
+    "__40"."index"
   FROM "__38" AS "__40"
 ),
-"__42" ("index", "x", "y") AS (
+"__42" ("x", "y", "index") AS (
   SELECT
-    ("__41"."index" + 1) AS "index",
     ("__41"."x" + (CASE WHEN ((abs(("heads_25"."x" - "__41"."x")) > 1) OR (abs(("heads_25"."y" - "__41"."y")) > 1)) THEN sign(("heads_25"."x" - "__41"."x")) ELSE 0 END)) AS "x",
-    ("__41"."y" + (CASE WHEN ((abs(("heads_25"."x" - "__41"."x")) > 1) OR (abs(("heads_25"."y" - "__41"."y")) > 1)) THEN sign(("heads_25"."y" - "__41"."y")) ELSE 0 END)) AS "y"
+    ("__41"."y" + (CASE WHEN ((abs(("heads_25"."x" - "__41"."x")) > 1) OR (abs(("heads_25"."y" - "__41"."y")) > 1)) THEN sign(("heads_25"."y" - "__41"."y")) ELSE 0 END)) AS "y",
+    ("__41"."index" + 1) AS "index"
   FROM (
     SELECT
       0 AS "index",
@@ -289,17 +289,17 @@ WITH RECURSIVE "__1" ("dx", "dy", "motion", "length", "rest") AS (
   JOIN "heads_24" AS "heads_25" ON (("__41"."index" + 1) = "heads_25"."index")
   UNION ALL
   SELECT
-    ("__43"."index" + 1) AS "index",
     ("__43"."x" + (CASE WHEN ((abs(("heads_26"."x" - "__43"."x")) > 1) OR (abs(("heads_26"."y" - "__43"."y")) > 1)) THEN sign(("heads_26"."x" - "__43"."x")) ELSE 0 END)) AS "x",
-    ("__43"."y" + (CASE WHEN ((abs(("heads_26"."x" - "__43"."x")) > 1) OR (abs(("heads_26"."y" - "__43"."y")) > 1)) THEN sign(("heads_26"."y" - "__43"."y")) ELSE 0 END)) AS "y"
+    ("__43"."y" + (CASE WHEN ((abs(("heads_26"."x" - "__43"."x")) > 1) OR (abs(("heads_26"."y" - "__43"."y")) > 1)) THEN sign(("heads_26"."y" - "__43"."y")) ELSE 0 END)) AS "y",
+    ("__43"."index" + 1) AS "index"
   FROM "__42" AS "__43"
   JOIN "heads_24" AS "heads_26" ON (("__43"."index" + 1) = "heads_26"."index")
 ),
-"heads_27" ("index", "x", "y") AS (
+"heads_27" ("x", "y", "index") AS (
   SELECT
-    "__44"."index",
     "__44"."x",
-    "__44"."y"
+    "__44"."y",
+    "__44"."index"
   FROM "__42" AS "__44"
 ),
 "__46" ("x", "y", "index") AS (
@@ -309,9 +309,9 @@ WITH RECURSIVE "__1" ("dx", "dy", "motion", "length", "rest") AS (
     ("__45"."index" + 1) AS "index"
   FROM (
     SELECT
+      0 AS "index",
       0 AS "x",
-      0 AS "y",
-      0 AS "index"
+      0 AS "y"
   ) AS "__45"
   JOIN "heads_27" AS "heads_28" ON (("__45"."index" + 1) = "heads_28"."index")
   UNION ALL

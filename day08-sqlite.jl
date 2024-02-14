@@ -1,6 +1,10 @@
 using FunSQL
 using SQLite
 
+const funsql_as_integer = FunSQL.Fun."CAST(? AS INTEGER)"
+const funsql_instr = FunSQL.Fun.instr
+const funsql_substr = FunSQL.Fun.substr
+
 @funsql begin
 
 split_first(text, sep) =
@@ -32,7 +36,7 @@ split_heights_one_step() =
         filter(rest != "")
         define(
             col => col + 1,
-            height => `CAST(? AS INTEGER)`(substr(rest, 1, 1)),
+            height => as_integer(substr(rest, 1, 1)),
             rest => substr(rest, 2))
     end
 
@@ -54,7 +58,7 @@ define_max_height(dir, dim1, dim2) =
             $dim1,
             order_by = [$dim2],
             frame = (mode = rows, start = -Inf, finish = -1))
-        define($dir => coalesce(max[height], -1))
+        define($dir => coalesce(max(height), -1))
     end
 
 solve_part1() =
@@ -66,11 +70,11 @@ solve_part1() =
         define_max_height(right, row, -col)
         filter(height > up || height > down || height > left || height > right)
         group()
-        define(part1 => count[])
+        define(part1 => count())
     end
 
 visibility(dim) =
-    coalesce($dim - coalesce(max[$dim, filter = height >= threshold], min[$dim]), 0)
+    coalesce($dim - coalesce(max($dim, filter = height >= threshold), min($dim)), 0)
 
 define_visibility(dir, dim1, dim2) =
     begin
@@ -92,12 +96,13 @@ solve_part2() =
         filter(height == threshold)
         define(score => up * down * left * right)
         group()
-        define(part2 => max[score])
+        define(part2 => max(score))
     end
 
 solve_all() =
-    let heights = parse_heights()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(heights => parse_heights())
     end
 
 const q = solve_all()

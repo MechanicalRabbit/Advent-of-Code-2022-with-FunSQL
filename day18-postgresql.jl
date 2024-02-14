@@ -12,13 +12,13 @@ DBInterface.prepare(conn::LibPQ.Connection, args...; kws...) =
 DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws...) =
     LibPQ.execute(conn, args...; kws...)
 
+const funsql_array_get = FunSQL.Fun."?[?]"
+const funsql_as_integer = FunSQL.Fun."(?::integer)"
+const funsql_bool_and = FunSQL.Agg.bool_and
+const funsql_bool_or = FunSQL.Agg.bool_or
+const funsql_regexp_matches = FunSQL.Fun.regexp_matches
+
 @funsql begin
-
-array_get(a, i) =
-    `?[?]`($a, $i)
-
-as_integer(str) =
-    `(?::integer)`($str)
 
 parse_cubes() =
     begin
@@ -47,7 +47,7 @@ solve_part1() =
                             x1 == x2 && y1 == y2 && z1 + 1 == z2)
                     group()
                 end)
-        define(part1 => 6 * count[] - 2 * pairs.count[])
+        define(part1 => 6 * count() - 2 * pairs.count())
     end
 
 not_a_cube(X, Y, Z) =
@@ -63,18 +63,18 @@ calculate_bounds() =
         from(cubes)
         group()
         define(
-            min_x => min[x] - 1,
-            max_x => max[x] + 1,
-            min_y => min[y] - 1,
-            max_y => max[y] + 1,
-            min_z => min[z] - 1,
-            max_z => max[z] + 1)
+            min_x => min(x) - 1,
+            max_x => max(x) + 1,
+            min_y => min(y) - 1,
+            max_y => max(y) + 1,
+            min_z => min(z) - 1,
+            max_z => max(z) + 1)
     end
 
 flood_step() =
     begin
         partition()
-        filter(bool_or[fresh])
+        filter(bool_or(fresh))
         cross_join(
             from(
                 (dx = [0, 1, -1, 0, 0, 0, 0],
@@ -86,7 +86,7 @@ flood_step() =
             z => z + dz,
             fresh => dx != 0 || dy != 0 || dz != 0)
         group(x, y, z)
-        define(fresh => bool_and[fresh])
+        define(fresh => bool_and(fresh))
         cross_join(from(bounds))
         filter(
             between(x, min_x, max_x) &&
@@ -119,13 +119,14 @@ solve_part2() =
             fill_z => fill_z + dz)
         join(from(cubes), on = x == fill_x && y == fill_y && z == fill_z)
         group()
-        define(part2 => count[])
+        define(part2 => count())
     end
 
 solve_all() =
-    let cubes = parse_cubes(),
-        bounds = calculate_bounds()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(bounds => calculate_bounds())
+        with(cubes => parse_cubes())
     end
 
 const q = solve_all()

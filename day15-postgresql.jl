@@ -12,16 +12,14 @@ DBInterface.prepare(conn::LibPQ.Connection, args...; kws...) =
 DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws...) =
     LibPQ.execute(conn, args...; kws...)
 
+
+const funsql_abs = FunSQL.Fun.abs
+const funsql_array_get = FunSQL.Fun."?[?]"
+const funsql_as_integer = FunSQL.Fun."(?::integer)"
+const funsql_as_bigint = FunSQL.Fun."(?::bigint)"
+const funsql_regexp_matches = FunSQL.Fun.regexp_matches
+
 @funsql begin
-
-array_get(a, i) =
-    `?[?]`($a, $i)
-
-as_integer(str) =
-    `(?::integer)`($str)
-
-as_bigint(str) =
-    `(?::bigint)`($str)
 
 parse_positions() =
     begin
@@ -42,13 +40,13 @@ parse_positions() =
 merge_intervals() =
     begin
         partition(order_by = [l], frame = (mode = rows, finish = -1))
-        define(bound => l <= max[r] + 1 ? 0 : 1)
+        define(bound => l <= max(r) + 1 ? 0 : 1)
         partition(order_by = [l, -bound], frame = rows)
-        define(interval => sum[bound])
+        define(interval => sum(bound))
         group(interval)
         define(
-            l => min[l],
-            r => max[r])
+            l => min(l),
+            r => max(r))
     end
 
 solve_part1() =
@@ -63,7 +61,7 @@ solve_part1() =
         group()
         cross_join(beacons => from(positions).filter(by == :y).group())
         define(
-            part1 => sum[r - l + 1] - beacons.count_distinct[bx])
+            part1 => sum(r - l + 1) - beacons.count_distinct(bx))
     end
 
 in_range(x, y) =
@@ -105,8 +103,9 @@ solve_part2() =
     end
 
 solve_all() =
-    let positions = parse_positions()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(positions => parse_positions())
     end
 
 const q = solve_all()

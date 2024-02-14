@@ -1,6 +1,9 @@
 using FunSQL
 using SQLite
 
+const funsql_rtrim = FunSQL.Fun.rtrim
+const funsql_substr = FunSQL.Fun.substr
+
 @funsql begin
 
 split_chars_one_step() =
@@ -25,11 +28,11 @@ make_starts() =
     begin
         split_chars(rtrim(:input, "\n"))
         partition(char, order_by = [index], frame = (mode = rows, finish = -1))
-        define(rep_index => coalesce(max[index], 0))
+        define(rep_index => coalesce(max(index), 0))
         partition(order_by = [index])
-        define(length => index - max[rep_index])
+        define(length => index - max(rep_index))
         group(length)
-        define(start => min[index])
+        define(start => min(index))
     end
 
 solve(name, l) =
@@ -46,8 +49,9 @@ solve_part2() =
     solve(part2, 14)
 
 solve_all() =
-    let starts = make_starts()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(starts => make_starts())
     end
 
 const q = solve_all()

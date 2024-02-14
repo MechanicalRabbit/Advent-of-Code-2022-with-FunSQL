@@ -36,10 +36,10 @@ WITH RECURSIVE "__1" ("dir", "size", "rest") AS (
   FROM "__1" AS "__2"
   WHERE ("__2"."rest" <> '')
 ),
-"dirs_1" ("size", "dir") AS (
+"dirs_1" ("dir", "size") AS (
   SELECT
-    sum("__3"."size") AS "size",
-    "__3"."dir"
+    "__3"."dir",
+    sum("__3"."size") AS "size"
   FROM "__1" AS "__3"
   GROUP BY "__3"."dir"
 ),

@@ -1,14 +1,14 @@
-WITH RECURSIVE "__2" ("packet", "index", "rest", "depth") AS (
+WITH RECURSIVE "__2" ("index", "packet", "rest", "depth") AS (
   SELECT
-    '' AS "packet",
     "__1"."index",
+    '' AS "packet",
     "__1"."captures"[1] AS "rest",
     0 AS "depth"
   FROM regexp_matches($1, '\S+', 'g') WITH ORDINALITY AS "__1" ("captures", "index")
   UNION ALL
   SELECT
-    concat("__5"."packet", (CASE WHEN ("__5"."token" = '[]') THEN concat('/', chr((32 + "__5"."depth"))) WHEN ("__5"."token" = '10') THEN ':' WHEN (("__5"."token" = '[') OR ("__5"."token" = ']')) THEN '' WHEN ("__5"."token" = ',') THEN chr((58 + "__5"."depth")) ELSE "__5"."token" END)) AS "packet",
     "__5"."index",
+    concat("__5"."packet", (CASE WHEN ("__5"."token" = '[]') THEN concat('/', chr((32 + "__5"."depth"))) WHEN ("__5"."token" = '10') THEN ':' WHEN (("__5"."token" = '[') OR ("__5"."token" = ']')) THEN '' WHEN ("__5"."token" = ',') THEN chr((58 + "__5"."depth")) ELSE "__5"."token" END)) AS "packet",
     "__5"."rest",
     ("__5"."depth" + (CASE WHEN ("__5"."token" = '[') THEN 1 WHEN ("__5"."token" = ']') THEN -1 ELSE 0 END)) AS "depth"
   FROM (
@@ -29,10 +29,10 @@ WITH RECURSIVE "__2" ("packet", "index", "rest", "depth") AS (
     ) AS "__4"
   ) AS "__5"
 ),
-"packets_1" ("packet", "index") AS (
+"packets_1" ("index", "packet") AS (
   SELECT
-    "__6"."packet",
-    "__6"."index"
+    "__6"."index",
+    "__6"."packet"
   FROM "__2" AS "__6"
   WHERE ("__6"."rest" = '')
 )

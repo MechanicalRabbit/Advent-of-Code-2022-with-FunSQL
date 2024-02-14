@@ -81,13 +81,13 @@ WITH RECURSIVE "segments_1" ("x1", "x2", "y1", "y2") AS (
   WHERE ("reachable_2"."y" = "max_y_3"."max_y")
   UNION ALL
   SELECT
-    "reachable_4"."x",
-    "reachable_4"."y"
+    "__12"."x",
+    "__12"."y"
   FROM (
     SELECT DISTINCT
-      ("reachable_3"."x" + "values_4"."dx") AS "x",
-      ("reachable_3"."y" - 1) AS "y"
-    FROM "__10" AS "reachable_3"
+      ("__11"."x" + "values_4"."dx") AS "x",
+      ("__11"."y" - 1) AS "y"
+    FROM "__10" AS "__11"
     CROSS JOIN (
       SELECT "values_3"."dx"
       FROM (
@@ -97,53 +97,53 @@ WITH RECURSIVE "segments_1" ("x1", "x2", "y1", "y2") AS (
           (1)
       ) AS "values_3" ("dx")
     ) AS "values_4"
-  ) AS "reachable_4"
+  ) AS "__12"
   WHERE (EXISTS (
     SELECT NULL AS "_"
-    FROM "reachable_1" AS "reachable_5"
+    FROM "reachable_1" AS "reachable_3"
     WHERE
-      ("reachable_5"."x" = "reachable_4"."x") AND
-      ("reachable_5"."y" = "reachable_4"."y")
+      ("reachable_3"."x" = "__12"."x") AND
+      ("reachable_3"."y" = "__12"."y")
   ))
 ),
 "fallthrough_1" ("x", "y") AS (
   SELECT
-    "__11"."x",
-    "__11"."y"
-  FROM "__10" AS "__11"
+    "__13"."x",
+    "__13"."y"
+  FROM "__10" AS "__13"
 ),
-"__12" ("x", "y") AS (
+"__14" ("x", "y") AS (
   SELECT
     500 AS "x",
     0 AS "y"
   UNION ALL
   SELECT
-    "__15"."x",
-    "__15"."y"
+    "__17"."x",
+    "__17"."y"
   FROM (
     SELECT DISTINCT
-      "__14"."x",
-      "__14"."y"
+      "__16"."x",
+      "__16"."y"
     FROM (
       SELECT
-        ("__13"."x" + "values_6"."dx") AS "x",
-        ("__13"."y" + 1) AS "y",
+        ("__15"."x" + "values_6"."dx") AS "x",
+        ("__15"."y" + 1) AS "y",
         "values_6"."dx",
         (NOT (EXISTS (
           SELECT NULL AS "_"
           FROM "fallthrough_1" AS "fallthrough_2"
           WHERE
-            ("fallthrough_2"."x" = "__13"."x") AND
-            ("fallthrough_2"."y" = ("__13"."y" + 1))
+            ("fallthrough_2"."x" = "__15"."x") AND
+            ("fallthrough_2"."y" = ("__15"."y" + 1))
         ))) AS "down_rest",
         (NOT (EXISTS (
           SELECT NULL AS "_"
           FROM "fallthrough_1" AS "fallthrough_3"
           WHERE
-            ("fallthrough_3"."x" = ("__13"."x" - 1)) AND
-            ("fallthrough_3"."y" = ("__13"."y" + 1))
+            ("fallthrough_3"."x" = ("__15"."x" - 1)) AND
+            ("fallthrough_3"."y" = ("__15"."y" + 1))
         ))) AS "down_left_rest"
-      FROM "__12" AS "__13"
+      FROM "__14" AS "__15"
       CROSS JOIN (
         SELECT "values_5"."dx"
         FROM (
@@ -153,35 +153,35 @@ WITH RECURSIVE "segments_1" ("x1", "x2", "y1", "y2") AS (
             (1)
         ) AS "values_5" ("dx")
       ) AS "values_6"
-    ) AS "__14"
+    ) AS "__16"
     WHERE
-      ("__14"."dx" = 0) OR
-      (("__14"."dx" = -1) AND "__14"."down_rest") OR
-      (("__14"."dx" = 1) AND "__14"."down_rest" AND "__14"."down_left_rest")
-  ) AS "__15"
+      ("__16"."dx" = 0) OR
+      (("__16"."dx" = -1) AND "__16"."down_rest") OR
+      (("__16"."dx" = 1) AND "__16"."down_rest" AND "__16"."down_left_rest")
+  ) AS "__17"
   WHERE (EXISTS (
     SELECT NULL AS "_"
-    FROM "reachable_1" AS "reachable_6"
+    FROM "reachable_1" AS "reachable_4"
     WHERE
-      ("reachable_6"."x" = "__15"."x") AND
-      ("reachable_6"."y" = "__15"."y")
+      ("reachable_4"."x" = "__17"."x") AND
+      ("reachable_4"."y" = "__17"."y")
   ))
 )
 SELECT
-  "__17"."part1",
-  "reachable_8"."part2"
+  "__19"."part1",
+  "reachable_6"."part2"
 FROM (
   SELECT count(*) AS "part1"
-  FROM "__12" AS "__16"
+  FROM "__14" AS "__18"
   WHERE (NOT (EXISTS (
     SELECT NULL AS "_"
     FROM "fallthrough_1" AS "fallthrough_4"
     WHERE
-      ("fallthrough_4"."x" = "__16"."x") AND
-      ("fallthrough_4"."y" = "__16"."y")
+      ("fallthrough_4"."x" = "__18"."x") AND
+      ("fallthrough_4"."y" = "__18"."y")
   )))
-) AS "__17"
+) AS "__19"
 CROSS JOIN (
   SELECT count(*) AS "part2"
-  FROM "reachable_1" AS "reachable_7"
-) AS "reachable_8"
+  FROM "reachable_1" AS "reachable_5"
+) AS "reachable_6"

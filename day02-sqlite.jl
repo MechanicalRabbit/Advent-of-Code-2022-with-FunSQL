@@ -1,7 +1,10 @@
 using FunSQL
 using SQLite
 
-function ScoreByLine(score_table)
+const funsql_instr = FunSQL.Fun.instr
+const funsql_substr = FunSQL.Fun.substr
+
+function funsql_score_by_line(score_table)
     cases = FunSQL.SQLNode[]
     for i = 1:3
         for j = 1:3
@@ -47,22 +50,23 @@ parse_guide() =
 solve_part1() =
     begin
         from(guide)
-        define(score => $(ScoreByLine(scores_part1)))
+        define(score => score_by_line($scores_part1))
         group()
-        define(part1 => sum[score])
+        define(part1 => sum(score))
     end
 
 solve_part2() =
     begin
         from(guide)
-        define(score => $(ScoreByLine(scores_part2)))
+        define(score => score_by_line($scores_part2))
         group()
-        define(part2 => sum[score])
+        define(part2 => sum(score))
     end
 
 solve_all() =
-    let guide = parse_guide()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(guide => parse_guide())
     end
 
 const q = solve_all()

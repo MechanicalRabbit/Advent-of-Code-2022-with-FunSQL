@@ -12,16 +12,14 @@ DBInterface.prepare(conn::LibPQ.Connection, args...; kws...) =
 DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws...) =
     LibPQ.execute(conn, args...; kws...)
 
+const funsql_as_integer = FunSQL.Fun."(?::integer)"
+const funsql_as_bigint = FunSQL.Fun."(?::bigint)"
+const funsql_array_get = FunSQL.Fun."?[?]"
+const funsql_mod = FunSQL.Fun.mod
+const funsql_regexp_matches = FunSQL.Fun.regexp_matches
+const funsql_string_to_table = FunSQL.Fun.string_to_table
+
 @funsql begin
-
-as_integer(s) =
-    `(?::integer)`($s)
-
-as_bigint(s) =
-    `(?::bigint)`($s)
-
-array_get(a, i) =
-    `?[?]`($a, $i)
 
 parse_monkeys() =
     begin
@@ -75,11 +73,11 @@ process_one_item(; relief = level / 3, max_round = 20) =
 answer(name) =
     begin
         group(index)
-        define(total => count[])
+        define(total => count())
         partition(order_by = [total])
-        define(score => total * lag[total])
+        define(score => total * lag(total))
         group()
-        define($name => max[score])
+        define($name => max(score))
     end
 
 solve_part1() =
@@ -103,11 +101,11 @@ calculate_product() =
                     product => product * monkey.test)
             end)
         group()
-        define(product => max[product])
+        define(product => max(product))
     end
 
 solve_part2() =
-    let product = calculate_product()
+    begin
         from(items)
         define(round => 1)
         iterate(
@@ -116,12 +114,14 @@ solve_part2() =
                 process_one_item(relief = mod(level, product), max_round = 10000)
             end)
         answer(part2)
+        with(product => calculate_product())
     end
 
 solve_all() =
-    let monkeys = parse_monkeys(),
-        items = parse_items()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(items => parse_items())
+        with(monkeys => parse_monkeys())
     end
 
 const q = solve_all()

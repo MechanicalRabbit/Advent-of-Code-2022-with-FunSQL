@@ -20,28 +20,28 @@ WITH RECURSIVE "__1" ("row", "line", "rest") AS (
   FROM "__1" AS "__2"
   WHERE ("__2"."rest" <> '')
 ),
-"__4" ("height", "col", "row", "rest") AS (
+"__4" ("height", "row", "col", "rest") AS (
   SELECT
     CAST(substr("__3"."line", 1, 1) AS INTEGER) AS "height",
-    (0 + 1) AS "col",
     "__3"."row",
+    (0 + 1) AS "col",
     substr("__3"."line", 2) AS "rest"
   FROM "__1" AS "__3"
   WHERE ("__3"."line" <> '')
   UNION ALL
   SELECT
     CAST(substr("__5"."rest", 1, 1) AS INTEGER) AS "height",
-    ("__5"."col" + 1) AS "col",
     "__5"."row",
+    ("__5"."col" + 1) AS "col",
     substr("__5"."rest", 2) AS "rest"
   FROM "__4" AS "__5"
   WHERE ("__5"."rest" <> '')
 ),
-"heights_1" ("height", "col", "row") AS (
+"heights_1" ("height", "row", "col") AS (
   SELECT
     "__6"."height",
-    "__6"."col",
-    "__6"."row"
+    "__6"."row",
+    "__6"."col"
   FROM "__4" AS "__6"
 )
 SELECT

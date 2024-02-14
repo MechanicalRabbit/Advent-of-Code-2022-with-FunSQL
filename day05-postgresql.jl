@@ -12,19 +12,17 @@ DBInterface.prepare(conn::LibPQ.Connection, args...; kws...) =
 DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws...) =
     LibPQ.execute(conn, args...; kws...)
 
+const funsql_as_integer = FunSQL.Fun."(?::integer)"
+const funsql_array_get = FunSQL.Fun."?[?]"
+const funsql_nullif = FunSQL.Fun.nullif
+const funsql_regexp_matches = FunSQL.Fun.regexp_matches
+const funsql_split_part = FunSQL.Fun.split_part
+const funsql_string_agg = FunSQL.Agg."string_agg(?, NULL ORDER BY ?)"
+const funsql_string_to_table = FunSQL.Fun.string_to_table
+const funsql_substr = FunSQL.Fun.substr
+const funsql_with_ordinality = FunSQL.Fun."? WITH ORDINALITY"
+
 @funsql begin
-
-with_ordinality(q) =
-    `? WITH ORDINALITY`($q)
-
-as_integer(str) =
-    `(?::integer)`($str)
-
-array_get(a, i) =
-    `?[?]`($a, $i)
-
-string_agg(s, i) =
-    `string_agg(?, NULL ORDER BY ?)`[$s, $i]
 
 parse_stacks() =
     begin
@@ -67,7 +65,7 @@ apply_move(; reverse) =
                     substr(stack, move.count + 1)
                 elseif col == move.to
                     concat(
-                        maybe_reverse(substr(lead[stack, move.from - col], 1, move.count),
+                        maybe_reverse(substr(lead(stack, move.from - col), 1, move.count),
                                       reverse = $reverse),
                         stack)
                 else
@@ -81,7 +79,7 @@ solve(name; reverse) =
         define(index => 1)
         iterate(apply_move(reverse = $reverse))
         partition()
-        filter(index == max[index])
+        filter(index == max(index))
         group()
         define($name => string_agg(substr(stack, 1, 1), col))
     end
@@ -93,9 +91,11 @@ solve_part2() =
     solve(part2, reverse = false)
 
 solve_all() =
-    let stacks = parse_stacks(),
-        moves = parse_moves()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(
+            stacks => parse_stacks(),
+            moves => parse_moves())
     end
 
 const q = solve_all()

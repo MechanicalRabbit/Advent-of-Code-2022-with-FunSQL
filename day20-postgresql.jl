@@ -12,16 +12,13 @@ DBInterface.prepare(conn::LibPQ.Connection, args...; kws...) =
 DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws...) =
     LibPQ.execute(conn, args...; kws...)
 
+const var"funsql_%" = FunSQL.Fun."%"
+const funsql_array_get = FunSQL.Fun."?[?]"
+const funsql_as_bigint = FunSQL.Fun."(?::bigint)"
+const funsql_regexp_matches = FunSQL.Fun.regexp_matches
+const funsql_with_ordinality = FunSQL.Fun."? WITH ORDINALITY"
+
 @funsql begin
-
-array_get(a, i) =
-    `?[?]`($a, $i)
-
-as_bigint(str) =
-    `(?::bigint)`($str)
-
-with_ordinality(q) =
-    `? WITH ORDINALITY`($q)
 
 parse_numbers() =
     begin
@@ -37,7 +34,7 @@ calculate_length() =
     begin
         from(numbers)
         group()
-        define(length => count[])
+        define(length => count())
     end
 
 mod1(x, n) =
@@ -48,8 +45,8 @@ mix_step() =
         filter(mix_index <= length)
         partition()
         define(
-            move_from => min[index, filter = original_index == mix_index],
-            move_delta => min[value, filter = original_index == mix_index])
+            move_from => min(index, filter = original_index == mix_index),
+            move_delta => min(value, filter = original_index == mix_index))
         define(
             move_to => mod1(move_from + move_delta, length - 1))
         define(
@@ -76,7 +73,7 @@ mix() =
 answer(name) =
     begin
         partition()
-        define(index0 => min[index, filter = value == 0])
+        define(index0 => min(index, filter = value == 0))
         define(
             index1000 => mod1(index0 + 1000, length),
             index2000 => mod1(index0 + 2000, length),
@@ -84,7 +81,7 @@ answer(name) =
         group()
         define(
             $name =>
-                sum[value, filter = in(index, index1000, index2000, index3000)])
+                sum(value, filter = in(index, index1000, index2000, index3000)))
     end
 
 solve_part1() =
@@ -108,9 +105,10 @@ solve_part2() =
     end
 
 solve_all() =
-    let numbers = parse_numbers(),
-        length = calculate_length()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(length => calculate_length())
+        with(numbers => parse_numbers())
     end
 
 const q = solve_all()

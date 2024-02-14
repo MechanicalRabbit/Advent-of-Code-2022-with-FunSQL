@@ -12,10 +12,12 @@ DBInterface.prepare(conn::LibPQ.Connection, args...; kws...) =
 DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws...) =
     LibPQ.execute(conn, args...; kws...)
 
-@funsql begin
+const var"funsql_%" = FunSQL.Fun."%"
+const funsql_bool_or = FunSQL.Agg.bool_or
+const funsql_string_to_table = FunSQL.Fun.string_to_table
+const funsql_with_ordinality = FunSQL.Fun."? WITH ORDINALITY"
 
-with_ordinality(q) =
-    `? WITH ORDINALITY`($q)
+@funsql begin
 
 parse_map() =
     begin
@@ -33,8 +35,8 @@ calculate_size() =
         from(map)
         group()
         define(
-            max_x => max[x],
-            max_y => max[y])
+            max_x => max(x),
+            max_y => max(y))
     end
 
 calculate_blizzards() =
@@ -75,7 +77,7 @@ in_valley() =
 travel_step(; goal = at_finish()) =
     begin
         partition()
-        filter(!bool_or[done])
+        filter(!bool_or(done))
         cross_join(
             from(
                 (dx = [0, 1, -1, 0, 0],
@@ -100,7 +102,7 @@ solve_part1() =
             done => false)
         iterate(travel_step())
         group()
-        define(part1 => max[t])
+        define(part1 => max(t))
     end
 
 solve_part2() =
@@ -118,14 +120,15 @@ solve_part2() =
         define(done => false)
         iterate(travel_step(goal = at_finish()))
         group()
-        define(part2 => max[t])
+        define(part2 => max(t))
     end
 
 solve_all() =
-    let map = parse_map(),
-        size = calculate_size(),
-        blizzards = calculate_blizzards()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(blizzards => calculate_blizzards())
+        with(size => calculate_size())
+        with(map => parse_map())
     end
 
 const q = solve_all()

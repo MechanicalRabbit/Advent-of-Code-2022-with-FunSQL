@@ -24,37 +24,37 @@ WITH RECURSIVE "cubes_1" ("x", "y", "z") AS (
   FROM "bounds_1" AS "bounds_2"
   UNION ALL
   SELECT
-    "bounds_7"."x",
-    "bounds_7"."y",
-    "bounds_7"."z",
-    "bounds_7"."fresh"
+    "__6"."x",
+    "__6"."y",
+    "__6"."z",
+    "__6"."fresh"
   FROM (
     SELECT
-      "bounds_6"."x",
-      "bounds_6"."y",
-      "bounds_6"."z",
-      bool_and("bounds_6"."fresh") AS "fresh"
+      "__5"."x",
+      "__5"."y",
+      "__5"."z",
+      bool_and("__5"."fresh") AS "fresh"
     FROM (
       SELECT
-        ("bounds_5"."x" + "values_2"."dx") AS "x",
-        ("bounds_5"."y" + "values_2"."dy") AS "y",
-        ("bounds_5"."z" + "values_2"."dz") AS "z",
+        ("__4"."x" + "values_2"."dx") AS "x",
+        ("__4"."y" + "values_2"."dy") AS "y",
+        ("__4"."z" + "values_2"."dz") AS "z",
         (("values_2"."dx" <> 0) OR ("values_2"."dy" <> 0) OR ("values_2"."dz" <> 0)) AS "fresh"
       FROM (
         SELECT
-          "bounds_4"."x",
-          "bounds_4"."y",
-          "bounds_4"."z"
+          "__3"."x",
+          "__3"."y",
+          "__3"."z"
         FROM (
           SELECT
-            "bounds_3"."x",
-            "bounds_3"."y",
-            "bounds_3"."z",
-            (bool_or("bounds_3"."fresh") OVER ()) AS "bool_or"
-          FROM "__1" AS "bounds_3"
-        ) AS "bounds_4"
-        WHERE "bounds_4"."bool_or"
-      ) AS "bounds_5"
+            "__2"."x",
+            "__2"."y",
+            "__2"."z",
+            (bool_or("__2"."fresh") OVER ()) AS "bool_or"
+          FROM "__1" AS "__2"
+        ) AS "__3"
+        WHERE "__3"."bool_or"
+      ) AS "__4"
       CROSS JOIN (
         SELECT
           "values_1"."dx",
@@ -71,29 +71,29 @@ WITH RECURSIVE "cubes_1" ("x", "y", "z") AS (
             (0, 0, -1)
         ) AS "values_1" ("dx", "dy", "dz")
       ) AS "values_2"
-    ) AS "bounds_6"
+    ) AS "__5"
     GROUP BY
-      "bounds_6"."x",
-      "bounds_6"."y",
-      "bounds_6"."z"
-  ) AS "bounds_7"
-  CROSS JOIN "bounds_1" AS "bounds_8"
+      "__5"."x",
+      "__5"."y",
+      "__5"."z"
+  ) AS "__6"
+  CROSS JOIN "bounds_1" AS "bounds_3"
   WHERE
-    ("bounds_7"."x" BETWEEN "bounds_8"."min_x" AND "bounds_8"."max_x") AND
-    ("bounds_7"."y" BETWEEN "bounds_8"."min_y" AND "bounds_8"."max_y") AND
-    ("bounds_7"."z" BETWEEN "bounds_8"."min_z" AND "bounds_8"."max_z") AND
+    ("__6"."x" BETWEEN "bounds_3"."min_x" AND "bounds_3"."max_x") AND
+    ("__6"."y" BETWEEN "bounds_3"."min_y" AND "bounds_3"."max_y") AND
+    ("__6"."z" BETWEEN "bounds_3"."min_z" AND "bounds_3"."max_z") AND
     (NOT EXISTS (
       SELECT NULL AS "_"
       FROM "cubes_1" AS "cubes_7"
       WHERE
-        ("cubes_7"."x" = "bounds_7"."x") AND
-        ("cubes_7"."y" = "bounds_7"."y") AND
-        ("cubes_7"."z" = "bounds_7"."z")
+        ("cubes_7"."x" = "__6"."x") AND
+        ("cubes_7"."y" = "__6"."y") AND
+        ("cubes_7"."z" = "__6"."z")
     ))
 )
 SELECT
   ((6 * "cubes_4"."count") - (2 * "pairs_1"."count")) AS "part1",
-  "bounds_10"."part2"
+  "__9"."part2"
 FROM (
   SELECT count(*) AS "count"
   FROM "cubes_1" AS "cubes_3"
@@ -107,11 +107,11 @@ CROSS JOIN (
   SELECT count(*) AS "part2"
   FROM (
     SELECT DISTINCT
-      "__2"."x" AS "fill_x",
-      "__2"."y" AS "fill_y",
-      "__2"."z" AS "fill_z"
-    FROM "__1" AS "__2"
-  ) AS "bounds_9"
+      "__7"."x" AS "fill_x",
+      "__7"."y" AS "fill_y",
+      "__7"."z" AS "fill_z"
+    FROM "__1" AS "__7"
+  ) AS "__8"
   CROSS JOIN (
     SELECT
       "values_3"."dx",
@@ -127,5 +127,5 @@ CROSS JOIN (
         (0, 0, -1)
     ) AS "values_3" ("dx", "dy", "dz")
   ) AS "values_4"
-  JOIN "cubes_1" AS "cubes_8" ON (("cubes_8"."x" = ("bounds_9"."fill_x" + "values_4"."dx")) AND ("cubes_8"."y" = ("bounds_9"."fill_y" + "values_4"."dy")) AND ("cubes_8"."z" = ("bounds_9"."fill_z" + "values_4"."dz")))
-) AS "bounds_10"
+  JOIN "cubes_1" AS "cubes_8" ON (("cubes_8"."x" = ("__8"."fill_x" + "values_4"."dx")) AND ("cubes_8"."y" = ("__8"."fill_y" + "values_4"."dy")) AND ("cubes_8"."z" = ("__8"."fill_z" + "values_4"."dz")))
+) AS "__9"

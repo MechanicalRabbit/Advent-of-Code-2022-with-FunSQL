@@ -1,6 +1,11 @@
 using FunSQL
 using SQLite
 
+const funsql_instr = FunSQL.Fun.instr
+const funsql_length = FunSQL.Fun.length
+const funsql_mod = FunSQL.Fun.mod
+const funsql_substr = FunSQL.Fun.substr
+
 @funsql begin
 
 split_line(text) =
@@ -43,7 +48,7 @@ solve_part1() =
             right => substr(line, 1 + length(line) / 2))
         join(from(characters), on = instr(left, char) && instr(right, char))
         group()
-        define(part1 => sum[priority])
+        define(part1 => sum(priority))
     end
 
 solve_part2() =
@@ -51,21 +56,23 @@ solve_part2() =
         from(rucksacks)
         partition(order_by = [index])
         define(
-            line1 => lag[line, 2],
-            line2 => lag[line, 1],
+            line1 => lag(line, 2),
+            line2 => lag(line, 1),
             line3 => line)
         filter(mod(index, 3) == 0)
         join(
             from(characters),
             on = instr(line1, char) && instr(line2, char) && instr(line3, char))
         group()
-        define(part2 => sum[priority])
+        define(part2 => sum(priority))
     end
 
 solve_all() =
-    let rucksacks = parse_rucksacks(),
-        characters = from_characters()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(
+            rucksacks => parse_rucksacks(),
+            characters => from_characters())
     end
 
 const q = solve_all()

@@ -12,13 +12,15 @@ DBInterface.prepare(conn::LibPQ.Connection, args...; kws...) =
 DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws...) =
     LibPQ.execute(conn, args...; kws...)
 
+const funsql_array_get = FunSQL.Fun."?[?]"
+const funsql_chr = FunSQL.Fun.chr
+const funsql_collate_c = FunSQL.Fun." COLLATE \"C\""
+const funsql_mod = FunSQL.Fun.mod
+const funsql_regexp_match = FunSQL.Fun.regexp_match
+const funsql_regexp_matches = FunSQL.Fun.regexp_matches
+const funsql_with_ordinality = FunSQL.Fun."? WITH ORDINALITY"
+
 @funsql begin
-
-with_ordinality(q) =
-    `? WITH ORDINALITY`($q)
-
-array_get(a, i) =
-    `?[?]`($a, $i)
 
 parse_packets() =
     begin
@@ -64,17 +66,14 @@ recode_packets() =
         filter(rest == "")
     end
 
-collate_c(str) =
-    ` COLLATE "C"`($str)
-
 solve_part1() =
     begin
         from(packets)
         partition(order_by = [index])
-        define(ordered => lag[packet] < collate_c(packet))
+        define(ordered => lag(packet) < collate_c(packet))
         filter(mod(index, 2) == 0)
         group()
-        define(part1 => sum[index / 2, filter = ordered])
+        define(part1 => sum(index / 2, filter = ordered))
     end
 
 solve_part2() =
@@ -83,13 +82,14 @@ solve_part2() =
         group()
         define(
             part2 =>
-                (1 + count[filter = collate_c(packet) < "2"]) *
-                (2 + count[filter = collate_c(packet) < "6"]))
+                (1 + count(filter = collate_c(packet) < "2")) *
+                (2 + count(filter = collate_c(packet) < "6")))
     end
 
 solve_all() =
-    let packets = recode_packets()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(packets => recode_packets())
     end
 
 const q = solve_all()

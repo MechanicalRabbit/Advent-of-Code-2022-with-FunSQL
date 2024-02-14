@@ -1,6 +1,12 @@
 using FunSQL
 using SQLite
 
+const funsql_abs = FunSQL.Fun.abs
+const funsql_as_integer = FunSQL.Fun."CAST(? AS INTEGER)"
+const funsql_instr = FunSQL.Fun.instr
+const funsql_sign = FunSQL.Fun.sign
+const funsql_substr = FunSQL.Fun.substr
+
 @funsql begin
 
 split_first(text, sep = "\n") =
@@ -22,7 +28,7 @@ split_motions_one_step() =
             motion => motion + 1,
             dx => dx(substr(split_first(rest), 1, 1)),
             dy => dy(substr(split_first(rest), 1, 1)),
-            length => `CAST(? AS INTEGER)`(substr(split_first(rest), 3)),
+            length => as_integer(substr(split_first(rest), 3)),
             rest => split_rest(rest))
     end
 
@@ -54,9 +60,9 @@ track_head() =
         expand_motions()
         partition(order_by = [motion, step])
         define(
-            index => count[],
-            x => sum[dx],
-            y => sum[dy])
+            index => count(),
+            x => sum(dx),
+            y => sum(dy))
     end
 
 moved() =
@@ -86,7 +92,7 @@ solve_part1() =
         track_tail()
         group(x, y)
         group()
-        define(part1 => count[])
+        define(part1 => count())
     end
 
 track_tail(n) =
@@ -97,12 +103,13 @@ solve_part2() =
         track_tail(8)
         group(x, y)
         group()
-        define(part2 => count[])
+        define(part2 => count())
     end
 
 solve_all() =
-    let heads = track_head()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(heads => track_head())
     end
 
 const q = solve_all()

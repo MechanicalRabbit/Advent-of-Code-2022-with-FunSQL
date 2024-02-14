@@ -1,6 +1,12 @@
 using FunSQL
 using SQLite
 
+const funsql_as_integer = FunSQL.Fun."CAST(? AS INTEGER)"
+const funsql_instr = FunSQL.Fun.instr
+const funsql_length = FunSQL.Fun.length
+const funsql_rtrim = FunSQL.Fun.rtrim
+const funsql_substr = FunSQL.Fun.substr
+
 @funsql begin
 
 split_first(text, sep) =
@@ -25,7 +31,7 @@ split_lines_one_step() =
         filter(rest != "")
         define(
             dir => current_dir(split_first(rest, "\n")),
-            size => `CAST(? AS INTEGER)`(split_first(rest, "\n")),
+            size => as_integer(split_first(rest, "\n")),
             rest => split_rest(rest, "\n"))
     end
 
@@ -42,7 +48,7 @@ parse_dirs() =
     begin
         split_lines(:input)
         group(dir)
-        define(size => sum[size])
+        define(size => sum(size))
     end
 
 calculate_totals() =
@@ -52,7 +58,7 @@ calculate_totals() =
             nested => from(dirs),
             on = substr(nested.dir, 1, length(dir)) == dir)
         group(dir)
-        define(total => sum[nested.size])
+        define(total => sum(nested.size))
     end
 
 solve_part1() =
@@ -60,23 +66,24 @@ solve_part1() =
         from(totals)
         filter(total <= 100000)
         group()
-        define(part1 => sum[total])
+        define(part1 => sum(total))
     end
 
 solve_part2() =
     begin
         from(totals)
         partition()
-        define(limit => max[total] - $(70000000 - 30000000))
+        define(limit => max(total) - $(70000000 - 30000000))
         filter(total >= limit)
         group()
-        define(part2 => min[total])
+        define(part2 => min(total))
     end
 
 solve_all() =
-    let dirs = parse_dirs(),
-        totals = calculate_totals()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(totals => calculate_totals())
+        with(dirs => parse_dirs())
     end
 
 const q = solve_all()

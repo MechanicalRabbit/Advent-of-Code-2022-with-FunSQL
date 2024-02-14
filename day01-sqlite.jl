@@ -1,6 +1,10 @@
 using FunSQL
 using SQLite
 
+const funsql_as_integer = FunSQL.Fun."CAST(? AS INTEGER)"
+const funsql_instr = FunSQL.Fun.instr
+const funsql_substr = FunSQL.Fun.substr
+
 @funsql begin
 
 split_first(text, sep) =
@@ -32,7 +36,7 @@ parse_inventories() =
         split(:input, "\n\n")
         define(elf => index)
         split(chunk, "\n")
-        define(calories => `CAST(? AS INTEGER)`(chunk))
+        define(calories => as_integer(chunk))
     end
 
 solve_part1() =
@@ -40,23 +44,24 @@ solve_part1() =
         from(inventories)
         group(elf)
         group()
-        define(part1 => max[sum[calories]])
+        define(part1 => max(sum(calories)))
     end
 
 solve_part2() =
     begin
         from(inventories)
         group(elf)
-        define(total => sum[calories])
+        define(total => sum(calories))
         order(total.desc())
         limit(3)
         group()
-        define(part2 => sum[total])
+        define(part2 => sum(total))
     end
 
 solve_all() =
-    let inventories = parse_inventories()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(inventories => parse_inventories())
     end
 
 const q = solve_all()

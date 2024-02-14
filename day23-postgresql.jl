@@ -12,13 +12,13 @@ DBInterface.prepare(conn::LibPQ.Connection, args...; kws...) =
 DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws...) =
     LibPQ.execute(conn, args...; kws...)
 
+const var"funsql_%" = FunSQL.Fun."%"
+const funsql_array_get = FunSQL.Fun."?[?]"
+const funsql_bool_or = FunSQL.Agg.bool_or
+const funsql_string_to_table = FunSQL.Fun.string_to_table
+const funsql_with_ordinality = FunSQL.Fun."? WITH ORDINALITY"
+
 @funsql begin
-
-array_get(a, i) =
-    `?[?]`($a, $i)
-
-with_ordinality(q) =
-    `? WITH ORDINALITY`($q)
 
 parse_elves() =
     begin
@@ -36,20 +36,20 @@ round() =
     begin
         partition(x, order_by = [y])
         define(
-            free_n => coalesce(lag[y], y) != y - 1,
-            free_s => coalesce(lead[y], y) != y + 1)
+            free_n => coalesce(lag(y), y) != y - 1,
+            free_s => coalesce(lead(y), y) != y + 1)
         partition(y, order_by = [x])
         define(
-            free_w => coalesce(lag[x], x) != x - 1,
-            free_e => coalesce(lead[x], x) != x + 1)
+            free_w => coalesce(lag(x), x) != x - 1,
+            free_e => coalesce(lead(x), x) != x + 1)
         partition(x - y, order_by = [x + y])
         define(
-            free_nw => coalesce(lag[x + y], x + y) != x + y - 2,
-            free_se => coalesce(lead[x + y], x + y) != x + y + 2)
+            free_nw => coalesce(lag(x + y), x + y) != x + y - 2,
+            free_se => coalesce(lead(x + y), x + y) != x + y + 2)
         partition(x + y, order_by = [x - y])
         define(
-            free_sw => coalesce(lag[x - y], x - y) != x - y - 2,
-            free_ne => coalesce(lead[x - y], x - y) != x - y + 2)
+            free_sw => coalesce(lag(x - y), x - y) != x - y - 2,
+            free_ne => coalesce(lead(x - y), x - y) != x - y + 2)
         define(
             alone =>
                 free_n && free_ne && free_e && free_se &&
@@ -87,7 +87,7 @@ round() =
                     coalesce(yw, ye, yn, ys, y),
                     coalesce(ye, yn, ys, yw, y)))
         partition(next_x, next_y)
-        define(blocked => count[] > 1)
+        define(blocked => count() > 1)
         define(
             x => case(!blocked, next_x, x),
             y => case(!blocked, next_y, y),
@@ -105,7 +105,7 @@ solve_part1() =
             end)
         filter(t == 11)
         group()
-        define(part1 => (max[x] - min[x] + 1) * (max[y] - min[y] + 1) - count[])
+        define(part1 => (max(x) - min(x) + 1) * (max(y) - min(y) + 1) - count())
     end
 
 solve_part2() =
@@ -116,15 +116,16 @@ solve_part2() =
             begin
                 round()
                 partition()
-                filter(bool_or[!alone])
+                filter(bool_or(!alone))
             end)
         group()
-        define(part2 => max[t])
+        define(part2 => max(t))
     end
 
 solve_all() =
-    let elves = parse_elves()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(elves => parse_elves())
     end
 
 const q = solve_all()

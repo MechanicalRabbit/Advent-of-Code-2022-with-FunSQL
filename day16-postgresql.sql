@@ -1,13 +1,13 @@
-WITH RECURSIVE "valves_1" ("mask", "valve", "rate", "index") AS (
+WITH RECURSIVE "valves_1" ("rate", "mask", "valve", "index") AS (
   SELECT
+    "__2"."rate",
     (CASE WHEN ("__2"."rate" > 0) THEN (1 << ((count(*) FILTER (WHERE ("__2"."rate" > 0)) OVER (ORDER BY "__2"."index"))::integer)) END) AS "mask",
     "__2"."valve",
-    "__2"."rate",
     "__2"."index"
   FROM (
     SELECT
-      "__1"."captures"[1] AS "valve",
       ("__1"."captures"[2]::integer) AS "rate",
+      "__1"."captures"[1] AS "valve",
       "__1"."index"
     FROM regexp_matches($1, 'Valve (\w+) has flow rate=(\d+)', 'g') WITH ORDINALITY AS "__1" ("captures", "index")
   ) AS "__2"
@@ -30,85 +30,85 @@ WITH RECURSIVE "valves_1" ("mask", "valve", "rate", "index") AS (
   LEFT JOIN "tunnels_1" AS "tunnels_2" ON (("valves_2"."valve" = "tunnels_2"."tunnel_src") AND ("valves_3"."valve" = "tunnels_2"."tunnel_dst"))
   UNION ALL
   SELECT
-    "valves_7"."src",
-    "valves_7"."dst",
-    least("valves_7"."dist", ("valves_7"."src_to_curr" + (min("valves_7"."dist") FILTER (WHERE ("valves_7"."src" = "valves_7"."valve")) OVER (PARTITION BY "valves_7"."dst")))) AS "dist",
-    "valves_7"."index"
+    "__6"."src",
+    "__6"."dst",
+    least("__6"."dist", ("__6"."src_to_curr" + (min("__6"."dist") FILTER (WHERE ("__6"."src" = "__6"."valve")) OVER (PARTITION BY "__6"."dst")))) AS "dist",
+    "__6"."index"
   FROM (
     SELECT
-      "valves_5"."src",
-      "valves_5"."dst",
-      "valves_5"."index",
-      "valves_5"."dist",
-      (min("valves_5"."dist") FILTER (WHERE ("valves_5"."dst" = "valves_6"."valve")) OVER (PARTITION BY "valves_5"."src")) AS "src_to_curr",
-      "valves_6"."valve"
+      "__5"."src",
+      "__5"."dst",
+      "__5"."index",
+      "__5"."dist",
+      (min("__5"."dist") FILTER (WHERE ("__5"."dst" = "valves_4"."valve")) OVER (PARTITION BY "__5"."src")) AS "src_to_curr",
+      "valves_4"."valve"
     FROM (
       SELECT
-        "valves_4"."src",
-        "valves_4"."dst",
-        ("valves_4"."index" + 1) AS "index",
-        "valves_4"."dist"
-      FROM "__3" AS "valves_4"
-    ) AS "valves_5"
-    JOIN "valves_1" AS "valves_6" ON ("valves_5"."index" = "valves_6"."index")
-  ) AS "valves_7"
+        "__4"."src",
+        "__4"."dst",
+        ("__4"."index" + 1) AS "index",
+        "__4"."dist"
+      FROM "__3" AS "__4"
+    ) AS "__5"
+    JOIN "valves_1" AS "valves_4" ON ("__5"."index" = "valves_4"."index")
+  ) AS "__6"
 ),
-"distances_1" ("dist", "dst", "src") AS (
+"distances_1" ("dst", "dist", "src") AS (
   SELECT
-    min("__4"."dist") AS "dist",
-    "__4"."dst",
-    "__4"."src"
-  FROM "__3" AS "__4"
+    "__7"."dst",
+    min("__7"."dist") AS "dist",
+    "__7"."src"
+  FROM "__3" AS "__7"
   GROUP BY
-    "__4"."src",
-    "__4"."dst"
+    "__7"."src",
+    "__7"."dst"
 ),
-"__5" ("total", "t", "opened", "curr") AS (
+"__8" ("total", "opened", "t", "curr") AS (
   SELECT
     0 AS "total",
-    1 AS "t",
     0 AS "opened",
+    1 AS "t",
     'AA' AS "curr"
   UNION ALL
   SELECT
-    max(("__7"."total" + ("__7"."rate" * ((30 - "__7"."t") + 1)))) AS "total",
-    "__7"."t",
-    "__7"."opened",
-    "__7"."curr"
+    max(("__10"."total" + ("__10"."rate" * ((30 - "__10"."t") + 1)))) AS "total",
+    "__10"."opened",
+    "__10"."t",
+    "__10"."curr"
   FROM (
     SELECT
-      ("__6"."t" + "distances_3"."dist" + 1) AS "t",
+      ("__9"."t" + "distances_3"."dist" + 1) AS "t",
       "distances_3"."dst" AS "curr",
-      ("__6"."opened" | "distances_3"."mask") AS "opened",
-      "__6"."total",
+      ("__9"."opened" | "distances_3"."mask") AS "opened",
+      "__9"."total",
       "distances_3"."rate"
-    FROM "__5" AS "__6"
+    FROM "__8" AS "__9"
     JOIN (
       SELECT
-        "valves_9"."rate",
-        "distances_2"."dist",
+        "valves_6"."rate",
         "distances_2"."dst",
-        "valves_9"."mask",
+        "valves_6"."mask",
+        "distances_2"."dist",
         "distances_2"."src"
       FROM "distances_1" AS "distances_2"
       JOIN (
         SELECT
-          "valves_8"."rate",
-          "valves_8"."mask",
-          "valves_8"."valve"
-        FROM "valves_1" AS "valves_8"
-        WHERE ("valves_8"."rate" > 0)
-      ) AS "valves_9" ON ("distances_2"."dst" = "valves_9"."valve")
-    ) AS "distances_3" ON ("__6"."curr" = "distances_3"."src")
-    WHERE (("__6"."opened" & "distances_3"."mask") = 0)
-  ) AS "__7"
-  WHERE ("__7"."t" <= 30)
+          "valves_5"."rate",
+          "valves_5"."mask",
+          "valves_5"."valve"
+        FROM "valves_1" AS "valves_5"
+        WHERE ("valves_5"."rate" > 0)
+      ) AS "valves_6" ON ("distances_2"."dst" = "valves_6"."valve")
+    ) AS "distances_3" ON ("__9"."curr" = "distances_3"."src")
+    WHERE (("__9"."opened" & "distances_3"."mask") = 0)
+  ) AS "__10"
+  WHERE ("__10"."t" <= 30)
   GROUP BY
-    "__7"."t",
-    "__7"."curr",
-    "__7"."opened"
+    "__10"."t",
+    "__10"."curr",
+    "__10"."opened"
 ),
-"__10" ("opened", "total", "t", "curr") AS (
+"__13" ("opened", "total", "t", "curr") AS (
   SELECT
     0 AS "opened",
     0 AS "total",
@@ -116,57 +116,57 @@ WITH RECURSIVE "valves_1" ("mask", "valve", "rate", "index") AS (
     'AA' AS "curr"
   UNION ALL
   SELECT
-    "__12"."opened",
-    max(("__12"."total" + ("__12"."rate" * ((26 - "__12"."t") + 1)))) AS "total",
-    "__12"."t",
-    "__12"."curr"
+    "__15"."opened",
+    max(("__15"."total" + ("__15"."rate" * ((26 - "__15"."t") + 1)))) AS "total",
+    "__15"."t",
+    "__15"."curr"
   FROM (
     SELECT
-      ("__11"."t" + "distances_5"."dist" + 1) AS "t",
+      ("__14"."t" + "distances_5"."dist" + 1) AS "t",
       "distances_5"."dst" AS "curr",
-      ("__11"."opened" | "distances_5"."mask") AS "opened",
-      "__11"."total",
+      ("__14"."opened" | "distances_5"."mask") AS "opened",
+      "__14"."total",
       "distances_5"."rate"
-    FROM "__10" AS "__11"
+    FROM "__13" AS "__14"
     JOIN (
       SELECT
-        "valves_11"."rate",
-        "distances_4"."dist",
+        "valves_8"."rate",
         "distances_4"."dst",
-        "valves_11"."mask",
+        "valves_8"."mask",
+        "distances_4"."dist",
         "distances_4"."src"
       FROM "distances_1" AS "distances_4"
       JOIN (
         SELECT
-          "valves_10"."rate",
-          "valves_10"."mask",
-          "valves_10"."valve"
-        FROM "valves_1" AS "valves_10"
-        WHERE ("valves_10"."rate" > 0)
-      ) AS "valves_11" ON ("distances_4"."dst" = "valves_11"."valve")
-    ) AS "distances_5" ON ("__11"."curr" = "distances_5"."src")
-    WHERE (("__11"."opened" & "distances_5"."mask") = 0)
-  ) AS "__12"
-  WHERE ("__12"."t" <= 26)
+          "valves_7"."rate",
+          "valves_7"."mask",
+          "valves_7"."valve"
+        FROM "valves_1" AS "valves_7"
+        WHERE ("valves_7"."rate" > 0)
+      ) AS "valves_8" ON ("distances_4"."dst" = "valves_8"."valve")
+    ) AS "distances_5" ON ("__14"."curr" = "distances_5"."src")
+    WHERE (("__14"."opened" & "distances_5"."mask") = 0)
+  ) AS "__15"
+  WHERE ("__15"."t" <= 26)
   GROUP BY
-    "__12"."t",
-    "__12"."curr",
-    "__12"."opened"
+    "__15"."t",
+    "__15"."curr",
+    "__15"."opened"
 ),
 "totals_1" ("total", "opened") AS (
   SELECT
-    max("__13"."total") AS "total",
-    "__13"."opened"
-  FROM "__10" AS "__13"
-  GROUP BY "__13"."opened"
+    max("__16"."total") AS "total",
+    "__16"."opened"
+  FROM "__13" AS "__16"
+  GROUP BY "__16"."opened"
 )
 SELECT
-  "__9"."part1",
+  "__12"."part1",
   "totals_4"."part2"
 FROM (
-  SELECT max("__8"."total") AS "part1"
-  FROM "__5" AS "__8"
-) AS "__9"
+  SELECT max("__11"."total") AS "part1"
+  FROM "__8" AS "__11"
+) AS "__12"
 CROSS JOIN (
   SELECT max(("totals_2"."total" + "totals_3"."total")) AS "part2"
   FROM "totals_1" AS "totals_2"

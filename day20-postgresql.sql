@@ -1,8 +1,8 @@
-WITH RECURSIVE "numbers_1" ("index", "original_index", "value") AS (
+WITH RECURSIVE "numbers_1" ("value", "index", "original_index") AS (
   SELECT
+    ("__1"."captures"[1]::bigint) AS "value",
     "__1"."index",
-    "__1"."index" AS "original_index",
-    ("__1"."captures"[1]::bigint) AS "value"
+    "__1"."index" AS "original_index"
   FROM regexp_matches($1, '[-0-9]+', 'g') WITH ORDINALITY AS "__1" ("captures", "index")
 ),
 "length_1" ("length") AS (
@@ -20,228 +20,72 @@ WITH RECURSIVE "numbers_1" ("index", "original_index", "value") AS (
   CROSS JOIN "length_1" AS "length_2"
   UNION ALL
   SELECT
-    "numbers_6"."value",
-    (CASE WHEN ("numbers_6"."index" = "numbers_6"."move_from") THEN "numbers_6"."move_to" WHEN ("numbers_6"."index" BETWEEN ("numbers_6"."move_from" + 1) AND "numbers_6"."move_to") THEN ("numbers_6"."index" - 1) WHEN ("numbers_6"."index" BETWEEN "numbers_6"."move_to" AND ("numbers_6"."move_from" - 1)) THEN ("numbers_6"."index" + 1) ELSE "numbers_6"."index" END) AS "index",
-    "numbers_6"."length",
-    ("numbers_6"."mix_index" + 1) AS "mix_index",
-    "numbers_6"."original_index"
+    "__5"."value",
+    (CASE WHEN ("__5"."index" = "__5"."move_from") THEN "__5"."move_to" WHEN ("__5"."index" BETWEEN ("__5"."move_from" + 1) AND "__5"."move_to") THEN ("__5"."index" - 1) WHEN ("__5"."index" BETWEEN "__5"."move_to" AND ("__5"."move_from" - 1)) THEN ("__5"."index" + 1) ELSE "__5"."index" END) AS "index",
+    "__5"."length",
+    ("__5"."mix_index" + 1) AS "mix_index",
+    "__5"."original_index"
   FROM (
     SELECT
-      "numbers_5"."value",
-      "numbers_5"."length",
-      "numbers_5"."original_index",
-      "numbers_5"."mix_index",
-      "numbers_5"."index",
-      "numbers_5"."move_from",
-      (((((("numbers_5"."move_from" + "numbers_5"."move_delta") - 1) % ("numbers_5"."length" - 1)) + ("numbers_5"."length" - 1)) % ("numbers_5"."length" - 1)) + 1) AS "move_to"
+      "__4"."value",
+      "__4"."length",
+      "__4"."original_index",
+      "__4"."mix_index",
+      "__4"."index",
+      "__4"."move_from",
+      (((((("__4"."move_from" + "__4"."move_delta") - 1) % ("__4"."length" - 1)) + ("__4"."length" - 1)) % ("__4"."length" - 1)) + 1) AS "move_to"
     FROM (
       SELECT
-        "numbers_4"."value",
-        "numbers_4"."length",
-        "numbers_4"."original_index",
-        "numbers_4"."mix_index",
-        "numbers_4"."index",
-        (min("numbers_4"."index") FILTER (WHERE ("numbers_4"."original_index" = "numbers_4"."mix_index")) OVER ()) AS "move_from",
-        (min("numbers_4"."value") FILTER (WHERE ("numbers_4"."original_index" = "numbers_4"."mix_index")) OVER ()) AS "move_delta"
-      FROM "__2" AS "numbers_4"
-      WHERE ("numbers_4"."mix_index" <= "numbers_4"."length")
-    ) AS "numbers_5"
-  ) AS "numbers_6"
+        "__3"."value",
+        "__3"."length",
+        "__3"."original_index",
+        "__3"."mix_index",
+        "__3"."index",
+        (min("__3"."index") FILTER (WHERE ("__3"."original_index" = "__3"."mix_index")) OVER ()) AS "move_from",
+        (min("__3"."value") FILTER (WHERE ("__3"."original_index" = "__3"."mix_index")) OVER ()) AS "move_delta"
+      FROM "__2" AS "__3"
+      WHERE ("__3"."mix_index" <= "__3"."length")
+    ) AS "__4"
+  ) AS "__5"
 ),
-"__4" ("value", "index", "length", "original_index", "mix_index") AS (
+"__9" ("value", "index", "length", "original_index", "mix_index") AS (
   SELECT
-    ("numbers_9"."value" * 811589153) AS "value",
-    "numbers_9"."index",
+    ("numbers_4"."value" * 811589153) AS "value",
+    "numbers_4"."index",
     "length_3"."length",
-    "numbers_9"."original_index",
+    "numbers_4"."original_index",
     1 AS "mix_index"
-  FROM "numbers_1" AS "numbers_9"
+  FROM "numbers_1" AS "numbers_4"
   CROSS JOIN "length_1" AS "length_3"
   UNION ALL
   SELECT
-    "numbers_12"."value",
-    (CASE WHEN ("numbers_12"."index" = "numbers_12"."move_from") THEN "numbers_12"."move_to" WHEN ("numbers_12"."index" BETWEEN ("numbers_12"."move_from" + 1) AND "numbers_12"."move_to") THEN ("numbers_12"."index" - 1) WHEN ("numbers_12"."index" BETWEEN "numbers_12"."move_to" AND ("numbers_12"."move_from" - 1)) THEN ("numbers_12"."index" + 1) ELSE "numbers_12"."index" END) AS "index",
-    "numbers_12"."length",
-    "numbers_12"."original_index",
-    ("numbers_12"."mix_index" + 1) AS "mix_index"
+    "__12"."value",
+    (CASE WHEN ("__12"."index" = "__12"."move_from") THEN "__12"."move_to" WHEN ("__12"."index" BETWEEN ("__12"."move_from" + 1) AND "__12"."move_to") THEN ("__12"."index" - 1) WHEN ("__12"."index" BETWEEN "__12"."move_to" AND ("__12"."move_from" - 1)) THEN ("__12"."index" + 1) ELSE "__12"."index" END) AS "index",
+    "__12"."length",
+    "__12"."original_index",
+    ("__12"."mix_index" + 1) AS "mix_index"
   FROM (
     SELECT
-      "numbers_11"."value",
-      "numbers_11"."length",
-      "numbers_11"."original_index",
-      "numbers_11"."mix_index",
-      "numbers_11"."index",
-      "numbers_11"."move_from",
-      (((((("numbers_11"."move_from" + "numbers_11"."move_delta") - 1) % ("numbers_11"."length" - 1)) + ("numbers_11"."length" - 1)) % ("numbers_11"."length" - 1)) + 1) AS "move_to"
+      "__11"."value",
+      "__11"."length",
+      "__11"."original_index",
+      "__11"."mix_index",
+      "__11"."index",
+      "__11"."move_from",
+      (((((("__11"."move_from" + "__11"."move_delta") - 1) % ("__11"."length" - 1)) + ("__11"."length" - 1)) % ("__11"."length" - 1)) + 1) AS "move_to"
     FROM (
       SELECT
-        "numbers_10"."value",
-        "numbers_10"."length",
-        "numbers_10"."original_index",
-        "numbers_10"."mix_index",
-        "numbers_10"."index",
-        (min("numbers_10"."index") FILTER (WHERE ("numbers_10"."original_index" = "numbers_10"."mix_index")) OVER ()) AS "move_from",
-        (min("numbers_10"."value") FILTER (WHERE ("numbers_10"."original_index" = "numbers_10"."mix_index")) OVER ()) AS "move_delta"
-      FROM "__4" AS "numbers_10"
-      WHERE ("numbers_10"."mix_index" <= "numbers_10"."length")
-    ) AS "numbers_11"
-  ) AS "numbers_12"
-),
-"__6" ("value", "index", "length", "original_index", "mix_index") AS (
-  SELECT
-    "__5"."value",
-    "__5"."index",
-    "__5"."length",
-    "__5"."original_index",
-    1 AS "mix_index"
-  FROM "__4" AS "__5"
-  WHERE ("__5"."mix_index" = ("__5"."length" + 1))
-  UNION ALL
-  SELECT
-    "numbers_15"."value",
-    (CASE WHEN ("numbers_15"."index" = "numbers_15"."move_from") THEN "numbers_15"."move_to" WHEN ("numbers_15"."index" BETWEEN ("numbers_15"."move_from" + 1) AND "numbers_15"."move_to") THEN ("numbers_15"."index" - 1) WHEN ("numbers_15"."index" BETWEEN "numbers_15"."move_to" AND ("numbers_15"."move_from" - 1)) THEN ("numbers_15"."index" + 1) ELSE "numbers_15"."index" END) AS "index",
-    "numbers_15"."length",
-    "numbers_15"."original_index",
-    ("numbers_15"."mix_index" + 1) AS "mix_index"
-  FROM (
-    SELECT
-      "numbers_14"."value",
-      "numbers_14"."length",
-      "numbers_14"."original_index",
-      "numbers_14"."mix_index",
-      "numbers_14"."index",
-      "numbers_14"."move_from",
-      (((((("numbers_14"."move_from" + "numbers_14"."move_delta") - 1) % ("numbers_14"."length" - 1)) + ("numbers_14"."length" - 1)) % ("numbers_14"."length" - 1)) + 1) AS "move_to"
-    FROM (
-      SELECT
-        "numbers_13"."value",
-        "numbers_13"."length",
-        "numbers_13"."original_index",
-        "numbers_13"."mix_index",
-        "numbers_13"."index",
-        (min("numbers_13"."index") FILTER (WHERE ("numbers_13"."original_index" = "numbers_13"."mix_index")) OVER ()) AS "move_from",
-        (min("numbers_13"."value") FILTER (WHERE ("numbers_13"."original_index" = "numbers_13"."mix_index")) OVER ()) AS "move_delta"
-      FROM "__6" AS "numbers_13"
-      WHERE ("numbers_13"."mix_index" <= "numbers_13"."length")
-    ) AS "numbers_14"
-  ) AS "numbers_15"
-),
-"__8" ("value", "index", "length", "original_index", "mix_index") AS (
-  SELECT
-    "__7"."value",
-    "__7"."index",
-    "__7"."length",
-    "__7"."original_index",
-    1 AS "mix_index"
-  FROM "__6" AS "__7"
-  WHERE ("__7"."mix_index" = ("__7"."length" + 1))
-  UNION ALL
-  SELECT
-    "numbers_18"."value",
-    (CASE WHEN ("numbers_18"."index" = "numbers_18"."move_from") THEN "numbers_18"."move_to" WHEN ("numbers_18"."index" BETWEEN ("numbers_18"."move_from" + 1) AND "numbers_18"."move_to") THEN ("numbers_18"."index" - 1) WHEN ("numbers_18"."index" BETWEEN "numbers_18"."move_to" AND ("numbers_18"."move_from" - 1)) THEN ("numbers_18"."index" + 1) ELSE "numbers_18"."index" END) AS "index",
-    "numbers_18"."length",
-    "numbers_18"."original_index",
-    ("numbers_18"."mix_index" + 1) AS "mix_index"
-  FROM (
-    SELECT
-      "numbers_17"."value",
-      "numbers_17"."length",
-      "numbers_17"."original_index",
-      "numbers_17"."mix_index",
-      "numbers_17"."index",
-      "numbers_17"."move_from",
-      (((((("numbers_17"."move_from" + "numbers_17"."move_delta") - 1) % ("numbers_17"."length" - 1)) + ("numbers_17"."length" - 1)) % ("numbers_17"."length" - 1)) + 1) AS "move_to"
-    FROM (
-      SELECT
-        "numbers_16"."value",
-        "numbers_16"."length",
-        "numbers_16"."original_index",
-        "numbers_16"."mix_index",
-        "numbers_16"."index",
-        (min("numbers_16"."index") FILTER (WHERE ("numbers_16"."original_index" = "numbers_16"."mix_index")) OVER ()) AS "move_from",
-        (min("numbers_16"."value") FILTER (WHERE ("numbers_16"."original_index" = "numbers_16"."mix_index")) OVER ()) AS "move_delta"
-      FROM "__8" AS "numbers_16"
-      WHERE ("numbers_16"."mix_index" <= "numbers_16"."length")
-    ) AS "numbers_17"
-  ) AS "numbers_18"
-),
-"__10" ("value", "index", "length", "original_index", "mix_index") AS (
-  SELECT
-    "__9"."value",
-    "__9"."index",
-    "__9"."length",
-    "__9"."original_index",
-    1 AS "mix_index"
-  FROM "__8" AS "__9"
-  WHERE ("__9"."mix_index" = ("__9"."length" + 1))
-  UNION ALL
-  SELECT
-    "numbers_21"."value",
-    (CASE WHEN ("numbers_21"."index" = "numbers_21"."move_from") THEN "numbers_21"."move_to" WHEN ("numbers_21"."index" BETWEEN ("numbers_21"."move_from" + 1) AND "numbers_21"."move_to") THEN ("numbers_21"."index" - 1) WHEN ("numbers_21"."index" BETWEEN "numbers_21"."move_to" AND ("numbers_21"."move_from" - 1)) THEN ("numbers_21"."index" + 1) ELSE "numbers_21"."index" END) AS "index",
-    "numbers_21"."length",
-    "numbers_21"."original_index",
-    ("numbers_21"."mix_index" + 1) AS "mix_index"
-  FROM (
-    SELECT
-      "numbers_20"."value",
-      "numbers_20"."length",
-      "numbers_20"."original_index",
-      "numbers_20"."mix_index",
-      "numbers_20"."index",
-      "numbers_20"."move_from",
-      (((((("numbers_20"."move_from" + "numbers_20"."move_delta") - 1) % ("numbers_20"."length" - 1)) + ("numbers_20"."length" - 1)) % ("numbers_20"."length" - 1)) + 1) AS "move_to"
-    FROM (
-      SELECT
-        "numbers_19"."value",
-        "numbers_19"."length",
-        "numbers_19"."original_index",
-        "numbers_19"."mix_index",
-        "numbers_19"."index",
-        (min("numbers_19"."index") FILTER (WHERE ("numbers_19"."original_index" = "numbers_19"."mix_index")) OVER ()) AS "move_from",
-        (min("numbers_19"."value") FILTER (WHERE ("numbers_19"."original_index" = "numbers_19"."mix_index")) OVER ()) AS "move_delta"
-      FROM "__10" AS "numbers_19"
-      WHERE ("numbers_19"."mix_index" <= "numbers_19"."length")
-    ) AS "numbers_20"
-  ) AS "numbers_21"
-),
-"__12" ("value", "index", "length", "original_index", "mix_index") AS (
-  SELECT
-    "__11"."value",
-    "__11"."index",
-    "__11"."length",
-    "__11"."original_index",
-    1 AS "mix_index"
-  FROM "__10" AS "__11"
-  WHERE ("__11"."mix_index" = ("__11"."length" + 1))
-  UNION ALL
-  SELECT
-    "numbers_24"."value",
-    (CASE WHEN ("numbers_24"."index" = "numbers_24"."move_from") THEN "numbers_24"."move_to" WHEN ("numbers_24"."index" BETWEEN ("numbers_24"."move_from" + 1) AND "numbers_24"."move_to") THEN ("numbers_24"."index" - 1) WHEN ("numbers_24"."index" BETWEEN "numbers_24"."move_to" AND ("numbers_24"."move_from" - 1)) THEN ("numbers_24"."index" + 1) ELSE "numbers_24"."index" END) AS "index",
-    "numbers_24"."length",
-    "numbers_24"."original_index",
-    ("numbers_24"."mix_index" + 1) AS "mix_index"
-  FROM (
-    SELECT
-      "numbers_23"."value",
-      "numbers_23"."length",
-      "numbers_23"."original_index",
-      "numbers_23"."mix_index",
-      "numbers_23"."index",
-      "numbers_23"."move_from",
-      (((((("numbers_23"."move_from" + "numbers_23"."move_delta") - 1) % ("numbers_23"."length" - 1)) + ("numbers_23"."length" - 1)) % ("numbers_23"."length" - 1)) + 1) AS "move_to"
-    FROM (
-      SELECT
-        "numbers_22"."value",
-        "numbers_22"."length",
-        "numbers_22"."original_index",
-        "numbers_22"."mix_index",
-        "numbers_22"."index",
-        (min("numbers_22"."index") FILTER (WHERE ("numbers_22"."original_index" = "numbers_22"."mix_index")) OVER ()) AS "move_from",
-        (min("numbers_22"."value") FILTER (WHERE ("numbers_22"."original_index" = "numbers_22"."mix_index")) OVER ()) AS "move_delta"
-      FROM "__12" AS "numbers_22"
-      WHERE ("numbers_22"."mix_index" <= "numbers_22"."length")
-    ) AS "numbers_23"
-  ) AS "numbers_24"
+        "__10"."value",
+        "__10"."length",
+        "__10"."original_index",
+        "__10"."mix_index",
+        "__10"."index",
+        (min("__10"."index") FILTER (WHERE ("__10"."original_index" = "__10"."mix_index")) OVER ()) AS "move_from",
+        (min("__10"."value") FILTER (WHERE ("__10"."original_index" = "__10"."mix_index")) OVER ()) AS "move_delta"
+      FROM "__9" AS "__10"
+      WHERE ("__10"."mix_index" <= "__10"."length")
+    ) AS "__11"
+  ) AS "__12"
 ),
 "__14" ("value", "index", "length", "original_index", "mix_index") AS (
   SELECT
@@ -250,218 +94,374 @@ WITH RECURSIVE "numbers_1" ("index", "original_index", "value") AS (
     "__13"."length",
     "__13"."original_index",
     1 AS "mix_index"
-  FROM "__12" AS "__13"
+  FROM "__9" AS "__13"
   WHERE ("__13"."mix_index" = ("__13"."length" + 1))
   UNION ALL
   SELECT
-    "numbers_27"."value",
-    (CASE WHEN ("numbers_27"."index" = "numbers_27"."move_from") THEN "numbers_27"."move_to" WHEN ("numbers_27"."index" BETWEEN ("numbers_27"."move_from" + 1) AND "numbers_27"."move_to") THEN ("numbers_27"."index" - 1) WHEN ("numbers_27"."index" BETWEEN "numbers_27"."move_to" AND ("numbers_27"."move_from" - 1)) THEN ("numbers_27"."index" + 1) ELSE "numbers_27"."index" END) AS "index",
-    "numbers_27"."length",
-    "numbers_27"."original_index",
-    ("numbers_27"."mix_index" + 1) AS "mix_index"
-  FROM (
-    SELECT
-      "numbers_26"."value",
-      "numbers_26"."length",
-      "numbers_26"."original_index",
-      "numbers_26"."mix_index",
-      "numbers_26"."index",
-      "numbers_26"."move_from",
-      (((((("numbers_26"."move_from" + "numbers_26"."move_delta") - 1) % ("numbers_26"."length" - 1)) + ("numbers_26"."length" - 1)) % ("numbers_26"."length" - 1)) + 1) AS "move_to"
-    FROM (
-      SELECT
-        "numbers_25"."value",
-        "numbers_25"."length",
-        "numbers_25"."original_index",
-        "numbers_25"."mix_index",
-        "numbers_25"."index",
-        (min("numbers_25"."index") FILTER (WHERE ("numbers_25"."original_index" = "numbers_25"."mix_index")) OVER ()) AS "move_from",
-        (min("numbers_25"."value") FILTER (WHERE ("numbers_25"."original_index" = "numbers_25"."mix_index")) OVER ()) AS "move_delta"
-      FROM "__14" AS "numbers_25"
-      WHERE ("numbers_25"."mix_index" <= "numbers_25"."length")
-    ) AS "numbers_26"
-  ) AS "numbers_27"
-),
-"__16" ("value", "index", "length", "original_index", "mix_index") AS (
-  SELECT
-    "__15"."value",
-    "__15"."index",
-    "__15"."length",
-    "__15"."original_index",
-    1 AS "mix_index"
-  FROM "__14" AS "__15"
-  WHERE ("__15"."mix_index" = ("__15"."length" + 1))
-  UNION ALL
-  SELECT
-    "numbers_30"."value",
-    (CASE WHEN ("numbers_30"."index" = "numbers_30"."move_from") THEN "numbers_30"."move_to" WHEN ("numbers_30"."index" BETWEEN ("numbers_30"."move_from" + 1) AND "numbers_30"."move_to") THEN ("numbers_30"."index" - 1) WHEN ("numbers_30"."index" BETWEEN "numbers_30"."move_to" AND ("numbers_30"."move_from" - 1)) THEN ("numbers_30"."index" + 1) ELSE "numbers_30"."index" END) AS "index",
-    "numbers_30"."length",
-    "numbers_30"."original_index",
-    ("numbers_30"."mix_index" + 1) AS "mix_index"
-  FROM (
-    SELECT
-      "numbers_29"."value",
-      "numbers_29"."length",
-      "numbers_29"."original_index",
-      "numbers_29"."mix_index",
-      "numbers_29"."index",
-      "numbers_29"."move_from",
-      (((((("numbers_29"."move_from" + "numbers_29"."move_delta") - 1) % ("numbers_29"."length" - 1)) + ("numbers_29"."length" - 1)) % ("numbers_29"."length" - 1)) + 1) AS "move_to"
-    FROM (
-      SELECT
-        "numbers_28"."value",
-        "numbers_28"."length",
-        "numbers_28"."original_index",
-        "numbers_28"."mix_index",
-        "numbers_28"."index",
-        (min("numbers_28"."index") FILTER (WHERE ("numbers_28"."original_index" = "numbers_28"."mix_index")) OVER ()) AS "move_from",
-        (min("numbers_28"."value") FILTER (WHERE ("numbers_28"."original_index" = "numbers_28"."mix_index")) OVER ()) AS "move_delta"
-      FROM "__16" AS "numbers_28"
-      WHERE ("numbers_28"."mix_index" <= "numbers_28"."length")
-    ) AS "numbers_29"
-  ) AS "numbers_30"
-),
-"__18" ("value", "index", "length", "original_index", "mix_index") AS (
-  SELECT
     "__17"."value",
-    "__17"."index",
+    (CASE WHEN ("__17"."index" = "__17"."move_from") THEN "__17"."move_to" WHEN ("__17"."index" BETWEEN ("__17"."move_from" + 1) AND "__17"."move_to") THEN ("__17"."index" - 1) WHEN ("__17"."index" BETWEEN "__17"."move_to" AND ("__17"."move_from" - 1)) THEN ("__17"."index" + 1) ELSE "__17"."index" END) AS "index",
     "__17"."length",
     "__17"."original_index",
-    1 AS "mix_index"
-  FROM "__16" AS "__17"
-  WHERE ("__17"."mix_index" = ("__17"."length" + 1))
-  UNION ALL
-  SELECT
-    "numbers_33"."value",
-    (CASE WHEN ("numbers_33"."index" = "numbers_33"."move_from") THEN "numbers_33"."move_to" WHEN ("numbers_33"."index" BETWEEN ("numbers_33"."move_from" + 1) AND "numbers_33"."move_to") THEN ("numbers_33"."index" - 1) WHEN ("numbers_33"."index" BETWEEN "numbers_33"."move_to" AND ("numbers_33"."move_from" - 1)) THEN ("numbers_33"."index" + 1) ELSE "numbers_33"."index" END) AS "index",
-    "numbers_33"."length",
-    "numbers_33"."original_index",
-    ("numbers_33"."mix_index" + 1) AS "mix_index"
+    ("__17"."mix_index" + 1) AS "mix_index"
   FROM (
     SELECT
-      "numbers_32"."value",
-      "numbers_32"."length",
-      "numbers_32"."original_index",
-      "numbers_32"."mix_index",
-      "numbers_32"."index",
-      "numbers_32"."move_from",
-      (((((("numbers_32"."move_from" + "numbers_32"."move_delta") - 1) % ("numbers_32"."length" - 1)) + ("numbers_32"."length" - 1)) % ("numbers_32"."length" - 1)) + 1) AS "move_to"
+      "__16"."value",
+      "__16"."length",
+      "__16"."original_index",
+      "__16"."mix_index",
+      "__16"."index",
+      "__16"."move_from",
+      (((((("__16"."move_from" + "__16"."move_delta") - 1) % ("__16"."length" - 1)) + ("__16"."length" - 1)) % ("__16"."length" - 1)) + 1) AS "move_to"
     FROM (
       SELECT
-        "numbers_31"."value",
-        "numbers_31"."length",
-        "numbers_31"."original_index",
-        "numbers_31"."mix_index",
-        "numbers_31"."index",
-        (min("numbers_31"."index") FILTER (WHERE ("numbers_31"."original_index" = "numbers_31"."mix_index")) OVER ()) AS "move_from",
-        (min("numbers_31"."value") FILTER (WHERE ("numbers_31"."original_index" = "numbers_31"."mix_index")) OVER ()) AS "move_delta"
-      FROM "__18" AS "numbers_31"
-      WHERE ("numbers_31"."mix_index" <= "numbers_31"."length")
-    ) AS "numbers_32"
-  ) AS "numbers_33"
+        "__15"."value",
+        "__15"."length",
+        "__15"."original_index",
+        "__15"."mix_index",
+        "__15"."index",
+        (min("__15"."index") FILTER (WHERE ("__15"."original_index" = "__15"."mix_index")) OVER ()) AS "move_from",
+        (min("__15"."value") FILTER (WHERE ("__15"."original_index" = "__15"."mix_index")) OVER ()) AS "move_delta"
+      FROM "__14" AS "__15"
+      WHERE ("__15"."mix_index" <= "__15"."length")
+    ) AS "__16"
+  ) AS "__17"
 ),
-"__20" ("value", "index", "length", "original_index", "mix_index") AS (
+"__19" ("value", "index", "length", "original_index", "mix_index") AS (
   SELECT
-    "__19"."value",
-    "__19"."index",
-    "__19"."length",
-    "__19"."original_index",
+    "__18"."value",
+    "__18"."index",
+    "__18"."length",
+    "__18"."original_index",
     1 AS "mix_index"
-  FROM "__18" AS "__19"
-  WHERE ("__19"."mix_index" = ("__19"."length" + 1))
+  FROM "__14" AS "__18"
+  WHERE ("__18"."mix_index" = ("__18"."length" + 1))
   UNION ALL
   SELECT
-    "numbers_36"."value",
-    (CASE WHEN ("numbers_36"."index" = "numbers_36"."move_from") THEN "numbers_36"."move_to" WHEN ("numbers_36"."index" BETWEEN ("numbers_36"."move_from" + 1) AND "numbers_36"."move_to") THEN ("numbers_36"."index" - 1) WHEN ("numbers_36"."index" BETWEEN "numbers_36"."move_to" AND ("numbers_36"."move_from" - 1)) THEN ("numbers_36"."index" + 1) ELSE "numbers_36"."index" END) AS "index",
-    "numbers_36"."length",
-    "numbers_36"."original_index",
-    ("numbers_36"."mix_index" + 1) AS "mix_index"
+    "__22"."value",
+    (CASE WHEN ("__22"."index" = "__22"."move_from") THEN "__22"."move_to" WHEN ("__22"."index" BETWEEN ("__22"."move_from" + 1) AND "__22"."move_to") THEN ("__22"."index" - 1) WHEN ("__22"."index" BETWEEN "__22"."move_to" AND ("__22"."move_from" - 1)) THEN ("__22"."index" + 1) ELSE "__22"."index" END) AS "index",
+    "__22"."length",
+    "__22"."original_index",
+    ("__22"."mix_index" + 1) AS "mix_index"
   FROM (
     SELECT
-      "numbers_35"."value",
-      "numbers_35"."length",
-      "numbers_35"."original_index",
-      "numbers_35"."mix_index",
-      "numbers_35"."index",
-      "numbers_35"."move_from",
-      (((((("numbers_35"."move_from" + "numbers_35"."move_delta") - 1) % ("numbers_35"."length" - 1)) + ("numbers_35"."length" - 1)) % ("numbers_35"."length" - 1)) + 1) AS "move_to"
+      "__21"."value",
+      "__21"."length",
+      "__21"."original_index",
+      "__21"."mix_index",
+      "__21"."index",
+      "__21"."move_from",
+      (((((("__21"."move_from" + "__21"."move_delta") - 1) % ("__21"."length" - 1)) + ("__21"."length" - 1)) % ("__21"."length" - 1)) + 1) AS "move_to"
     FROM (
       SELECT
-        "numbers_34"."value",
-        "numbers_34"."length",
-        "numbers_34"."original_index",
-        "numbers_34"."mix_index",
-        "numbers_34"."index",
-        (min("numbers_34"."index") FILTER (WHERE ("numbers_34"."original_index" = "numbers_34"."mix_index")) OVER ()) AS "move_from",
-        (min("numbers_34"."value") FILTER (WHERE ("numbers_34"."original_index" = "numbers_34"."mix_index")) OVER ()) AS "move_delta"
-      FROM "__20" AS "numbers_34"
-      WHERE ("numbers_34"."mix_index" <= "numbers_34"."length")
-    ) AS "numbers_35"
-  ) AS "numbers_36"
+        "__20"."value",
+        "__20"."length",
+        "__20"."original_index",
+        "__20"."mix_index",
+        "__20"."index",
+        (min("__20"."index") FILTER (WHERE ("__20"."original_index" = "__20"."mix_index")) OVER ()) AS "move_from",
+        (min("__20"."value") FILTER (WHERE ("__20"."original_index" = "__20"."mix_index")) OVER ()) AS "move_delta"
+      FROM "__19" AS "__20"
+      WHERE ("__20"."mix_index" <= "__20"."length")
+    ) AS "__21"
+  ) AS "__22"
 ),
-"__22" ("value", "index", "length", "mix_index", "original_index") AS (
+"__24" ("value", "index", "length", "original_index", "mix_index") AS (
   SELECT
-    "__21"."value",
-    "__21"."index",
-    "__21"."length",
+    "__23"."value",
+    "__23"."index",
+    "__23"."length",
+    "__23"."original_index",
+    1 AS "mix_index"
+  FROM "__19" AS "__23"
+  WHERE ("__23"."mix_index" = ("__23"."length" + 1))
+  UNION ALL
+  SELECT
+    "__27"."value",
+    (CASE WHEN ("__27"."index" = "__27"."move_from") THEN "__27"."move_to" WHEN ("__27"."index" BETWEEN ("__27"."move_from" + 1) AND "__27"."move_to") THEN ("__27"."index" - 1) WHEN ("__27"."index" BETWEEN "__27"."move_to" AND ("__27"."move_from" - 1)) THEN ("__27"."index" + 1) ELSE "__27"."index" END) AS "index",
+    "__27"."length",
+    "__27"."original_index",
+    ("__27"."mix_index" + 1) AS "mix_index"
+  FROM (
+    SELECT
+      "__26"."value",
+      "__26"."length",
+      "__26"."original_index",
+      "__26"."mix_index",
+      "__26"."index",
+      "__26"."move_from",
+      (((((("__26"."move_from" + "__26"."move_delta") - 1) % ("__26"."length" - 1)) + ("__26"."length" - 1)) % ("__26"."length" - 1)) + 1) AS "move_to"
+    FROM (
+      SELECT
+        "__25"."value",
+        "__25"."length",
+        "__25"."original_index",
+        "__25"."mix_index",
+        "__25"."index",
+        (min("__25"."index") FILTER (WHERE ("__25"."original_index" = "__25"."mix_index")) OVER ()) AS "move_from",
+        (min("__25"."value") FILTER (WHERE ("__25"."original_index" = "__25"."mix_index")) OVER ()) AS "move_delta"
+      FROM "__24" AS "__25"
+      WHERE ("__25"."mix_index" <= "__25"."length")
+    ) AS "__26"
+  ) AS "__27"
+),
+"__29" ("value", "index", "length", "original_index", "mix_index") AS (
+  SELECT
+    "__28"."value",
+    "__28"."index",
+    "__28"."length",
+    "__28"."original_index",
+    1 AS "mix_index"
+  FROM "__24" AS "__28"
+  WHERE ("__28"."mix_index" = ("__28"."length" + 1))
+  UNION ALL
+  SELECT
+    "__32"."value",
+    (CASE WHEN ("__32"."index" = "__32"."move_from") THEN "__32"."move_to" WHEN ("__32"."index" BETWEEN ("__32"."move_from" + 1) AND "__32"."move_to") THEN ("__32"."index" - 1) WHEN ("__32"."index" BETWEEN "__32"."move_to" AND ("__32"."move_from" - 1)) THEN ("__32"."index" + 1) ELSE "__32"."index" END) AS "index",
+    "__32"."length",
+    "__32"."original_index",
+    ("__32"."mix_index" + 1) AS "mix_index"
+  FROM (
+    SELECT
+      "__31"."value",
+      "__31"."length",
+      "__31"."original_index",
+      "__31"."mix_index",
+      "__31"."index",
+      "__31"."move_from",
+      (((((("__31"."move_from" + "__31"."move_delta") - 1) % ("__31"."length" - 1)) + ("__31"."length" - 1)) % ("__31"."length" - 1)) + 1) AS "move_to"
+    FROM (
+      SELECT
+        "__30"."value",
+        "__30"."length",
+        "__30"."original_index",
+        "__30"."mix_index",
+        "__30"."index",
+        (min("__30"."index") FILTER (WHERE ("__30"."original_index" = "__30"."mix_index")) OVER ()) AS "move_from",
+        (min("__30"."value") FILTER (WHERE ("__30"."original_index" = "__30"."mix_index")) OVER ()) AS "move_delta"
+      FROM "__29" AS "__30"
+      WHERE ("__30"."mix_index" <= "__30"."length")
+    ) AS "__31"
+  ) AS "__32"
+),
+"__34" ("value", "index", "length", "original_index", "mix_index") AS (
+  SELECT
+    "__33"."value",
+    "__33"."index",
+    "__33"."length",
+    "__33"."original_index",
+    1 AS "mix_index"
+  FROM "__29" AS "__33"
+  WHERE ("__33"."mix_index" = ("__33"."length" + 1))
+  UNION ALL
+  SELECT
+    "__37"."value",
+    (CASE WHEN ("__37"."index" = "__37"."move_from") THEN "__37"."move_to" WHEN ("__37"."index" BETWEEN ("__37"."move_from" + 1) AND "__37"."move_to") THEN ("__37"."index" - 1) WHEN ("__37"."index" BETWEEN "__37"."move_to" AND ("__37"."move_from" - 1)) THEN ("__37"."index" + 1) ELSE "__37"."index" END) AS "index",
+    "__37"."length",
+    "__37"."original_index",
+    ("__37"."mix_index" + 1) AS "mix_index"
+  FROM (
+    SELECT
+      "__36"."value",
+      "__36"."length",
+      "__36"."original_index",
+      "__36"."mix_index",
+      "__36"."index",
+      "__36"."move_from",
+      (((((("__36"."move_from" + "__36"."move_delta") - 1) % ("__36"."length" - 1)) + ("__36"."length" - 1)) % ("__36"."length" - 1)) + 1) AS "move_to"
+    FROM (
+      SELECT
+        "__35"."value",
+        "__35"."length",
+        "__35"."original_index",
+        "__35"."mix_index",
+        "__35"."index",
+        (min("__35"."index") FILTER (WHERE ("__35"."original_index" = "__35"."mix_index")) OVER ()) AS "move_from",
+        (min("__35"."value") FILTER (WHERE ("__35"."original_index" = "__35"."mix_index")) OVER ()) AS "move_delta"
+      FROM "__34" AS "__35"
+      WHERE ("__35"."mix_index" <= "__35"."length")
+    ) AS "__36"
+  ) AS "__37"
+),
+"__39" ("value", "index", "length", "original_index", "mix_index") AS (
+  SELECT
+    "__38"."value",
+    "__38"."index",
+    "__38"."length",
+    "__38"."original_index",
+    1 AS "mix_index"
+  FROM "__34" AS "__38"
+  WHERE ("__38"."mix_index" = ("__38"."length" + 1))
+  UNION ALL
+  SELECT
+    "__42"."value",
+    (CASE WHEN ("__42"."index" = "__42"."move_from") THEN "__42"."move_to" WHEN ("__42"."index" BETWEEN ("__42"."move_from" + 1) AND "__42"."move_to") THEN ("__42"."index" - 1) WHEN ("__42"."index" BETWEEN "__42"."move_to" AND ("__42"."move_from" - 1)) THEN ("__42"."index" + 1) ELSE "__42"."index" END) AS "index",
+    "__42"."length",
+    "__42"."original_index",
+    ("__42"."mix_index" + 1) AS "mix_index"
+  FROM (
+    SELECT
+      "__41"."value",
+      "__41"."length",
+      "__41"."original_index",
+      "__41"."mix_index",
+      "__41"."index",
+      "__41"."move_from",
+      (((((("__41"."move_from" + "__41"."move_delta") - 1) % ("__41"."length" - 1)) + ("__41"."length" - 1)) % ("__41"."length" - 1)) + 1) AS "move_to"
+    FROM (
+      SELECT
+        "__40"."value",
+        "__40"."length",
+        "__40"."original_index",
+        "__40"."mix_index",
+        "__40"."index",
+        (min("__40"."index") FILTER (WHERE ("__40"."original_index" = "__40"."mix_index")) OVER ()) AS "move_from",
+        (min("__40"."value") FILTER (WHERE ("__40"."original_index" = "__40"."mix_index")) OVER ()) AS "move_delta"
+      FROM "__39" AS "__40"
+      WHERE ("__40"."mix_index" <= "__40"."length")
+    ) AS "__41"
+  ) AS "__42"
+),
+"__44" ("value", "index", "length", "original_index", "mix_index") AS (
+  SELECT
+    "__43"."value",
+    "__43"."index",
+    "__43"."length",
+    "__43"."original_index",
+    1 AS "mix_index"
+  FROM "__39" AS "__43"
+  WHERE ("__43"."mix_index" = ("__43"."length" + 1))
+  UNION ALL
+  SELECT
+    "__47"."value",
+    (CASE WHEN ("__47"."index" = "__47"."move_from") THEN "__47"."move_to" WHEN ("__47"."index" BETWEEN ("__47"."move_from" + 1) AND "__47"."move_to") THEN ("__47"."index" - 1) WHEN ("__47"."index" BETWEEN "__47"."move_to" AND ("__47"."move_from" - 1)) THEN ("__47"."index" + 1) ELSE "__47"."index" END) AS "index",
+    "__47"."length",
+    "__47"."original_index",
+    ("__47"."mix_index" + 1) AS "mix_index"
+  FROM (
+    SELECT
+      "__46"."value",
+      "__46"."length",
+      "__46"."original_index",
+      "__46"."mix_index",
+      "__46"."index",
+      "__46"."move_from",
+      (((((("__46"."move_from" + "__46"."move_delta") - 1) % ("__46"."length" - 1)) + ("__46"."length" - 1)) % ("__46"."length" - 1)) + 1) AS "move_to"
+    FROM (
+      SELECT
+        "__45"."value",
+        "__45"."length",
+        "__45"."original_index",
+        "__45"."mix_index",
+        "__45"."index",
+        (min("__45"."index") FILTER (WHERE ("__45"."original_index" = "__45"."mix_index")) OVER ()) AS "move_from",
+        (min("__45"."value") FILTER (WHERE ("__45"."original_index" = "__45"."mix_index")) OVER ()) AS "move_delta"
+      FROM "__44" AS "__45"
+      WHERE ("__45"."mix_index" <= "__45"."length")
+    ) AS "__46"
+  ) AS "__47"
+),
+"__49" ("value", "index", "length", "original_index", "mix_index") AS (
+  SELECT
+    "__48"."value",
+    "__48"."index",
+    "__48"."length",
+    "__48"."original_index",
+    1 AS "mix_index"
+  FROM "__44" AS "__48"
+  WHERE ("__48"."mix_index" = ("__48"."length" + 1))
+  UNION ALL
+  SELECT
+    "__52"."value",
+    (CASE WHEN ("__52"."index" = "__52"."move_from") THEN "__52"."move_to" WHEN ("__52"."index" BETWEEN ("__52"."move_from" + 1) AND "__52"."move_to") THEN ("__52"."index" - 1) WHEN ("__52"."index" BETWEEN "__52"."move_to" AND ("__52"."move_from" - 1)) THEN ("__52"."index" + 1) ELSE "__52"."index" END) AS "index",
+    "__52"."length",
+    "__52"."original_index",
+    ("__52"."mix_index" + 1) AS "mix_index"
+  FROM (
+    SELECT
+      "__51"."value",
+      "__51"."length",
+      "__51"."original_index",
+      "__51"."mix_index",
+      "__51"."index",
+      "__51"."move_from",
+      (((((("__51"."move_from" + "__51"."move_delta") - 1) % ("__51"."length" - 1)) + ("__51"."length" - 1)) % ("__51"."length" - 1)) + 1) AS "move_to"
+    FROM (
+      SELECT
+        "__50"."value",
+        "__50"."length",
+        "__50"."original_index",
+        "__50"."mix_index",
+        "__50"."index",
+        (min("__50"."index") FILTER (WHERE ("__50"."original_index" = "__50"."mix_index")) OVER ()) AS "move_from",
+        (min("__50"."value") FILTER (WHERE ("__50"."original_index" = "__50"."mix_index")) OVER ()) AS "move_delta"
+      FROM "__49" AS "__50"
+      WHERE ("__50"."mix_index" <= "__50"."length")
+    ) AS "__51"
+  ) AS "__52"
+),
+"__54" ("value", "index", "length", "mix_index", "original_index") AS (
+  SELECT
+    "__53"."value",
+    "__53"."index",
+    "__53"."length",
     1 AS "mix_index",
-    "__21"."original_index"
-  FROM "__20" AS "__21"
-  WHERE ("__21"."mix_index" = ("__21"."length" + 1))
+    "__53"."original_index"
+  FROM "__49" AS "__53"
+  WHERE ("__53"."mix_index" = ("__53"."length" + 1))
   UNION ALL
   SELECT
-    "numbers_39"."value",
-    (CASE WHEN ("numbers_39"."index" = "numbers_39"."move_from") THEN "numbers_39"."move_to" WHEN ("numbers_39"."index" BETWEEN ("numbers_39"."move_from" + 1) AND "numbers_39"."move_to") THEN ("numbers_39"."index" - 1) WHEN ("numbers_39"."index" BETWEEN "numbers_39"."move_to" AND ("numbers_39"."move_from" - 1)) THEN ("numbers_39"."index" + 1) ELSE "numbers_39"."index" END) AS "index",
-    "numbers_39"."length",
-    ("numbers_39"."mix_index" + 1) AS "mix_index",
-    "numbers_39"."original_index"
+    "__57"."value",
+    (CASE WHEN ("__57"."index" = "__57"."move_from") THEN "__57"."move_to" WHEN ("__57"."index" BETWEEN ("__57"."move_from" + 1) AND "__57"."move_to") THEN ("__57"."index" - 1) WHEN ("__57"."index" BETWEEN "__57"."move_to" AND ("__57"."move_from" - 1)) THEN ("__57"."index" + 1) ELSE "__57"."index" END) AS "index",
+    "__57"."length",
+    ("__57"."mix_index" + 1) AS "mix_index",
+    "__57"."original_index"
   FROM (
     SELECT
-      "numbers_38"."value",
-      "numbers_38"."length",
-      "numbers_38"."original_index",
-      "numbers_38"."mix_index",
-      "numbers_38"."index",
-      "numbers_38"."move_from",
-      (((((("numbers_38"."move_from" + "numbers_38"."move_delta") - 1) % ("numbers_38"."length" - 1)) + ("numbers_38"."length" - 1)) % ("numbers_38"."length" - 1)) + 1) AS "move_to"
+      "__56"."value",
+      "__56"."length",
+      "__56"."original_index",
+      "__56"."mix_index",
+      "__56"."index",
+      "__56"."move_from",
+      (((((("__56"."move_from" + "__56"."move_delta") - 1) % ("__56"."length" - 1)) + ("__56"."length" - 1)) % ("__56"."length" - 1)) + 1) AS "move_to"
     FROM (
       SELECT
-        "numbers_37"."value",
-        "numbers_37"."length",
-        "numbers_37"."original_index",
-        "numbers_37"."mix_index",
-        "numbers_37"."index",
-        (min("numbers_37"."index") FILTER (WHERE ("numbers_37"."original_index" = "numbers_37"."mix_index")) OVER ()) AS "move_from",
-        (min("numbers_37"."value") FILTER (WHERE ("numbers_37"."original_index" = "numbers_37"."mix_index")) OVER ()) AS "move_delta"
-      FROM "__22" AS "numbers_37"
-      WHERE ("numbers_37"."mix_index" <= "numbers_37"."length")
-    ) AS "numbers_38"
-  ) AS "numbers_39"
+        "__55"."value",
+        "__55"."length",
+        "__55"."original_index",
+        "__55"."mix_index",
+        "__55"."index",
+        (min("__55"."index") FILTER (WHERE ("__55"."original_index" = "__55"."mix_index")) OVER ()) AS "move_from",
+        (min("__55"."value") FILTER (WHERE ("__55"."original_index" = "__55"."mix_index")) OVER ()) AS "move_delta"
+      FROM "__54" AS "__55"
+      WHERE ("__55"."mix_index" <= "__55"."length")
+    ) AS "__56"
+  ) AS "__57"
 )
 SELECT
-  "numbers_8"."part1",
-  "numbers_41"."part2"
+  "__8"."part1",
+  "__60"."part2"
 FROM (
-  SELECT (sum("numbers_7"."value") FILTER (WHERE ("numbers_7"."index" IN ((((((("numbers_7"."index0" + 1000) - 1) % "numbers_7"."length") + "numbers_7"."length") % "numbers_7"."length") + 1), (((((("numbers_7"."index0" + 2000) - 1) % "numbers_7"."length") + "numbers_7"."length") % "numbers_7"."length") + 1), (((((("numbers_7"."index0" + 3000) - 1) % "numbers_7"."length") + "numbers_7"."length") % "numbers_7"."length") + 1))))) AS "part1"
+  SELECT (sum("__7"."value") FILTER (WHERE ("__7"."index" IN ((((((("__7"."index0" + 1000) - 1) % "__7"."length") + "__7"."length") % "__7"."length") + 1), (((((("__7"."index0" + 2000) - 1) % "__7"."length") + "__7"."length") % "__7"."length") + 1), (((((("__7"."index0" + 3000) - 1) % "__7"."length") + "__7"."length") % "__7"."length") + 1))))) AS "part1"
   FROM (
     SELECT
-      "__3"."value",
-      "__3"."index",
-      (min("__3"."index") FILTER (WHERE ("__3"."value" = 0)) OVER ()) AS "index0",
-      "__3"."length"
-    FROM "__2" AS "__3"
-    WHERE ("__3"."mix_index" = ("__3"."length" + 1))
-  ) AS "numbers_7"
-) AS "numbers_8"
+      "__6"."value",
+      "__6"."index",
+      (min("__6"."index") FILTER (WHERE ("__6"."value" = 0)) OVER ()) AS "index0",
+      "__6"."length"
+    FROM "__2" AS "__6"
+    WHERE ("__6"."mix_index" = ("__6"."length" + 1))
+  ) AS "__7"
+) AS "__8"
 CROSS JOIN (
-  SELECT (sum("numbers_40"."value") FILTER (WHERE ("numbers_40"."index" IN ((((((("numbers_40"."index0" + 1000) - 1) % "numbers_40"."length") + "numbers_40"."length") % "numbers_40"."length") + 1), (((((("numbers_40"."index0" + 2000) - 1) % "numbers_40"."length") + "numbers_40"."length") % "numbers_40"."length") + 1), (((((("numbers_40"."index0" + 3000) - 1) % "numbers_40"."length") + "numbers_40"."length") % "numbers_40"."length") + 1))))) AS "part2"
+  SELECT (sum("__59"."value") FILTER (WHERE ("__59"."index" IN ((((((("__59"."index0" + 1000) - 1) % "__59"."length") + "__59"."length") % "__59"."length") + 1), (((((("__59"."index0" + 2000) - 1) % "__59"."length") + "__59"."length") % "__59"."length") + 1), (((((("__59"."index0" + 3000) - 1) % "__59"."length") + "__59"."length") % "__59"."length") + 1))))) AS "part2"
   FROM (
     SELECT
-      "__23"."value",
-      "__23"."index",
-      (min("__23"."index") FILTER (WHERE ("__23"."value" = 0)) OVER ()) AS "index0",
-      "__23"."length"
-    FROM "__22" AS "__23"
-    WHERE ("__23"."mix_index" = ("__23"."length" + 1))
-  ) AS "numbers_40"
-) AS "numbers_41"
+      "__58"."value",
+      "__58"."index",
+      (min("__58"."index") FILTER (WHERE ("__58"."value" = 0)) OVER ()) AS "index0",
+      "__58"."length"
+    FROM "__54" AS "__58"
+    WHERE ("__58"."mix_index" = ("__58"."length" + 1))
+  ) AS "__59"
+) AS "__60"

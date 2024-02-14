@@ -12,10 +12,12 @@ DBInterface.prepare(conn::LibPQ.Connection, args...; kws...) =
 DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws...) =
     LibPQ.execute(conn, args...; kws...)
 
-@funsql begin
+const var"funsql_%" = FunSQL.Fun."%"
+const funsql_as_bigint = FunSQL.Fun."(?::bigint)"
+const funsql_string_to_table = FunSQL.Fun.string_to_table
+const funsql_substr = FunSQL.Fun.substr
 
-as_bigint(n) =
-    `?::bigint`($n)
+@funsql begin
 
 parse_requirements() =
     from(
@@ -64,7 +66,7 @@ solve_part1() =
         filter(snafu == "")
         group()
         define(
-            value => sum[value],
+            value => sum(value),
             snafu => "")
         iterate(to_snafu_step())
         filter(value == 0)

@@ -1,29 +1,29 @@
-WITH RECURSIVE "__1" ("index", "line", "rest") AS (
+WITH RECURSIVE "__1" ("line", "index", "rest") AS (
   SELECT
-    (0 + 1) AS "index",
     (CASE WHEN (instr(?1, '
 ') > 0) THEN substr(?1, 1, (instr(?1, '
 ') - 1)) ELSE ?1 END) AS "line",
+    (0 + 1) AS "index",
     (CASE WHEN (instr(?1, '
 ') > 0) THEN substr(?1, (instr(?1, '
 ') + 1)) ELSE '' END) AS "rest"
   WHERE (?1 <> '')
   UNION ALL
   SELECT
-    ("__2"."index" + 1) AS "index",
     (CASE WHEN (instr("__2"."rest", '
 ') > 0) THEN substr("__2"."rest", 1, (instr("__2"."rest", '
 ') - 1)) ELSE "__2"."rest" END) AS "line",
+    ("__2"."index" + 1) AS "index",
     (CASE WHEN (instr("__2"."rest", '
 ') > 0) THEN substr("__2"."rest", (instr("__2"."rest", '
 ') + 1)) ELSE '' END) AS "rest"
   FROM "__1" AS "__2"
   WHERE ("__2"."rest" <> '')
 ),
-"rucksacks_1" ("index", "line") AS (
+"rucksacks_1" ("line", "index") AS (
   SELECT
-    "__3"."index",
-    "__3"."line"
+    "__3"."line",
+    "__3"."index"
   FROM "__1" AS "__3"
 ),
 "characters_1" ("char", "priority") AS (

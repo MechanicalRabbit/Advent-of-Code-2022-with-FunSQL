@@ -14,12 +14,12 @@ WITH RECURSIVE "stacks_1" ("stack", "col") AS (
   ) AS "__3"
   GROUP BY "__3"."col"
 ),
-"moves_1" ("index", "from", "count", "to") AS (
+"moves_1" ("from", "count", "to", "index") AS (
   SELECT
-    "__4"."index",
     ("__4"."captures"[2]::integer) AS "from",
     ("__4"."captures"[1]::integer) AS "count",
-    ("__4"."captures"[3]::integer) AS "to"
+    ("__4"."captures"[3]::integer) AS "to",
+    "__4"."index"
   FROM regexp_matches($1, 'move (\d+) from (\d+) to (\d+)', 'g') WITH ORDINALITY AS "__4" ("captures", "index")
 ),
 "__5" ("stack", "col", "index") AS (
@@ -30,50 +30,50 @@ WITH RECURSIVE "stacks_1" ("stack", "col") AS (
   FROM "stacks_1" AS "stacks_2"
   UNION ALL
   SELECT
-    (CASE WHEN ("stacks_3"."col" = "moves_2"."from") THEN substr("stacks_3"."stack", ("moves_2"."count" + 1)) WHEN ("stacks_3"."col" = "moves_2"."to") THEN concat(reverse(substr((lead("stacks_3"."stack", ("moves_2"."from" - "stacks_3"."col")) OVER (ORDER BY "stacks_3"."col")), 1, "moves_2"."count")), "stacks_3"."stack") ELSE "stacks_3"."stack" END) AS "stack",
-    "stacks_3"."col",
-    ("stacks_3"."index" + 1) AS "index"
-  FROM "__5" AS "stacks_3"
-  JOIN "moves_1" AS "moves_2" ON ("stacks_3"."index" = "moves_2"."index")
+    (CASE WHEN ("__6"."col" = "moves_2"."from") THEN substr("__6"."stack", ("moves_2"."count" + 1)) WHEN ("__6"."col" = "moves_2"."to") THEN concat(reverse(substr((lead("__6"."stack", ("moves_2"."from" - "__6"."col")) OVER (ORDER BY "__6"."col")), 1, "moves_2"."count")), "__6"."stack") ELSE "__6"."stack" END) AS "stack",
+    "__6"."col",
+    ("__6"."index" + 1) AS "index"
+  FROM "__5" AS "__6"
+  JOIN "moves_1" AS "moves_2" ON ("__6"."index" = "moves_2"."index")
 ),
-"__7" ("stack", "col", "index") AS (
+"__10" ("stack", "col", "index") AS (
   SELECT
-    "stacks_6"."stack",
-    "stacks_6"."col",
+    "stacks_3"."stack",
+    "stacks_3"."col",
     1 AS "index"
-  FROM "stacks_1" AS "stacks_6"
+  FROM "stacks_1" AS "stacks_3"
   UNION ALL
   SELECT
-    (CASE WHEN ("stacks_7"."col" = "moves_3"."from") THEN substr("stacks_7"."stack", ("moves_3"."count" + 1)) WHEN ("stacks_7"."col" = "moves_3"."to") THEN concat(substr((lead("stacks_7"."stack", ("moves_3"."from" - "stacks_7"."col")) OVER (ORDER BY "stacks_7"."col")), 1, "moves_3"."count"), "stacks_7"."stack") ELSE "stacks_7"."stack" END) AS "stack",
-    "stacks_7"."col",
-    ("stacks_7"."index" + 1) AS "index"
-  FROM "__7" AS "stacks_7"
-  JOIN "moves_1" AS "moves_3" ON ("stacks_7"."index" = "moves_3"."index")
+    (CASE WHEN ("__11"."col" = "moves_3"."from") THEN substr("__11"."stack", ("moves_3"."count" + 1)) WHEN ("__11"."col" = "moves_3"."to") THEN concat(substr((lead("__11"."stack", ("moves_3"."from" - "__11"."col")) OVER (ORDER BY "__11"."col")), 1, "moves_3"."count"), "__11"."stack") ELSE "__11"."stack" END) AS "stack",
+    "__11"."col",
+    ("__11"."index" + 1) AS "index"
+  FROM "__10" AS "__11"
+  JOIN "moves_1" AS "moves_3" ON ("__11"."index" = "moves_3"."index")
 )
 SELECT
-  "stacks_5"."part1",
-  "stacks_9"."part2"
+  "__9"."part1",
+  "__14"."part2"
 FROM (
-  SELECT string_agg(substr("stacks_4"."stack", 1, 1), NULL ORDER BY "stacks_4"."col") AS "part1"
+  SELECT string_agg(substr("__8"."stack", 1, 1), NULL ORDER BY "__8"."col") AS "part1"
   FROM (
     SELECT
-      "__6"."stack",
-      "__6"."col",
-      "__6"."index",
-      (max("__6"."index") OVER ()) AS "max"
-    FROM "__5" AS "__6"
-  ) AS "stacks_4"
-  WHERE ("stacks_4"."index" = "stacks_4"."max")
-) AS "stacks_5"
+      "__7"."stack",
+      "__7"."col",
+      "__7"."index",
+      (max("__7"."index") OVER ()) AS "max"
+    FROM "__5" AS "__7"
+  ) AS "__8"
+  WHERE ("__8"."index" = "__8"."max")
+) AS "__9"
 CROSS JOIN (
-  SELECT string_agg(substr("stacks_8"."stack", 1, 1), NULL ORDER BY "stacks_8"."col") AS "part2"
+  SELECT string_agg(substr("__13"."stack", 1, 1), NULL ORDER BY "__13"."col") AS "part2"
   FROM (
     SELECT
-      "__8"."stack",
-      "__8"."col",
-      "__8"."index",
-      (max("__8"."index") OVER ()) AS "max"
-    FROM "__7" AS "__8"
-  ) AS "stacks_8"
-  WHERE ("stacks_8"."index" = "stacks_8"."max")
-) AS "stacks_9"
+      "__12"."stack",
+      "__12"."col",
+      "__12"."index",
+      (max("__12"."index") OVER ()) AS "max"
+    FROM "__10" AS "__12"
+  ) AS "__13"
+  WHERE ("__13"."index" = "__13"."max")
+) AS "__14"

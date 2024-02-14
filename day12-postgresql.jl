@@ -12,10 +12,12 @@ DBInterface.prepare(conn::LibPQ.Connection, args...; kws...) =
 DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws...) =
     LibPQ.execute(conn, args...; kws...)
 
-@funsql begin
+const funsql_ascii = FunSQL.Fun.ascii
+const funsql_least = FunSQL.Fun.least
+const funsql_string_to_table = FunSQL.Fun.string_to_table
+const funsql_with_ordinality = FunSQL.Fun."? WITH ORDINALITY"
 
-with_ordinality(q) =
-    `? WITH ORDINALITY`($q)
+@funsql begin
 
 parse_heights() =
     begin
@@ -34,15 +36,15 @@ parse_heights() =
     end
 
 dist_lag() =
-    case(height <= lag[height] + 1, lag[dist] + 1)
+    case(height <= lag(height) + 1, lag(dist) + 1)
 
 dist_lead() =
-    case(height <= lead[height] + 1, lead[dist] + 1)
+    case(height <= lead(height) + 1, lead(dist) + 1)
 
 step() =
     begin
         partition()
-        filter(is_null(min[dist, filter = finish]))
+        filter(is_null(min(dist, filter = finish)))
         partition(row, order_by = [col])
         define(
             left => dist_lag(),
@@ -60,7 +62,7 @@ solve(name, init) =
         define(dist => case($init, 0))
         iterate(step())
         group()
-        define($name => max[dist])
+        define($name => max(dist))
     end
 
 solve_part1() =
@@ -70,8 +72,9 @@ solve_part2() =
     solve(part2, height == 0)
 
 solve_all() =
-    let heights = parse_heights()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(heights => parse_heights())
     end
 
 const q = solve_all()

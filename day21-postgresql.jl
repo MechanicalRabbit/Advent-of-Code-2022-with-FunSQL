@@ -12,13 +12,12 @@ DBInterface.prepare(conn::LibPQ.Connection, args...; kws...) =
 DBInterface.execute(conn::Union{LibPQ.Connection, LibPQ.Statement}, args...; kws...) =
     LibPQ.execute(conn, args...; kws...)
 
+const funsql_array_get = FunSQL.Fun."?[?]"
+const funsql_as_bigint = FunSQL.Fun."(?::bigint)"
+const funsql_gcd = FunSQL.Fun.gcd
+const funsql_regexp_matches = FunSQL.Fun.regexp_matches
+
 @funsql begin
-
-array_get(a, i) =
-    `?[?]`($a, $i)
-
-as_bigint(str) =
-    `(?::bigint)`($str)
 
 parse_jobs() =
     begin
@@ -36,11 +35,11 @@ parse_jobs() =
 evaluate_step() =
     begin
         partition()
-        filter(is_null(min[val, filter = var == "root"]))
+        filter(is_null(min(val, filter = var == "root")))
         partition(is_null(val) ? ref1 : var)
-        define(ref1_val => min[val])
+        define(ref1_val => min(val))
         partition(is_null(val) ? ref2 : var)
-        define(ref2_val => min[val])
+        define(ref2_val => min(val))
         define(
             val =>
                 coalesce(
@@ -61,25 +60,25 @@ solve_part1() =
         from(jobs)
         iterate(evaluate_step())
         group()
-        define(part1 => min[val, filter = var == "root"])
+        define(part1 => min(val, filter = var == "root"))
     end
 
 evaluate_frac_step() =
     begin
         partition()
-        filter(is_null(min[a, filter = var == "root"]))
+        filter(is_null(min(a, filter = var == "root")))
         partition(is_null(a) ? ref1 : var)
         define(
-            a1 => min[a],
-            b1 => min[b],
-            c1 => min[c],
-            d1 => min[d])
+            a1 => min(a),
+            b1 => min(b),
+            c1 => min(c),
+            d1 => min(d))
         partition(is_null(a) ? ref2 : var)
         define(
-            a2 => min[a],
-            b2 => min[b],
-            c2 => min[c],
-            d2 => min[d])
+            a2 => min(a),
+            b2 => min(b),
+            c2 => min(c),
+            d2 => min(d))
         define(
             a =>
                 coalesce(
@@ -140,24 +139,25 @@ solve_part2() =
         iterate(evaluate_frac_step())
         partition()
         define(
-            root_ref1 => min[ref1, filter = var == "root"],
-            root_ref2 => min[ref2, filter = var == "root"])
+            root_ref1 => min(ref1, filter = var == "root"),
+            root_ref2 => min(ref2, filter = var == "root"))
         group()
         define(
-            a1 => min[a, filter = var == root_ref1],
-            b1 => min[b, filter = var == root_ref1],
-            c1 => min[c, filter = var == root_ref1],
-            d1 => min[d, filter = var == root_ref1],
-            a2 => min[a, filter = var == root_ref2],
-            b2 => min[b, filter = var == root_ref2],
-            c2 => min[c, filter = var == root_ref2],
-            d2 => min[d, filter = var == root_ref2])
+            a1 => min(a, filter = var == root_ref1),
+            b1 => min(b, filter = var == root_ref1),
+            c1 => min(c, filter = var == root_ref1),
+            d1 => min(d, filter = var == root_ref1),
+            a2 => min(a, filter = var == root_ref2),
+            b2 => min(b, filter = var == root_ref2),
+            c2 => min(c, filter = var == root_ref2),
+            d2 => min(d, filter = var == root_ref2))
         select(part2 => - (b1 * d2 - b2 * d1) / (a1 * d2 + b1 * c2 - a2 * d1 - b2 * c1))
     end
 
 solve_all() =
-    let jobs = parse_jobs()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(jobs => parse_jobs())
     end
 
 const q = solve_all()

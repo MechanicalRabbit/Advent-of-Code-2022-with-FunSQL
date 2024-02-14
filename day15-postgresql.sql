@@ -1,8 +1,8 @@
-WITH RECURSIVE "positions_1" ("sx", "sy", "range", "bx", "by") AS (
+WITH RECURSIVE "positions_1" ("sx", "range", "sy", "bx", "by") AS (
   SELECT
     "regexp_matches_2"."sx",
-    "regexp_matches_2"."sy",
     (abs(("regexp_matches_2"."sx" - "regexp_matches_2"."bx")) + abs(("regexp_matches_2"."sy" - "regexp_matches_2"."by"))) AS "range",
+    "regexp_matches_2"."sy",
     "regexp_matches_2"."bx",
     "regexp_matches_2"."by"
   FROM (
@@ -74,17 +74,17 @@ FROM (
     FROM (
       SELECT
         (sum("positions_5"."bound") OVER (ORDER BY "positions_5"."l", (- "positions_5"."bound") ROWS UNBOUNDED PRECEDING)) AS "interval",
-        "positions_5"."r",
-        "positions_5"."l"
+        "positions_5"."l",
+        "positions_5"."r"
       FROM (
         SELECT
-          "positions_4"."r",
           "positions_4"."l",
+          "positions_4"."r",
           (CASE WHEN ("positions_4"."l" <= ((max("positions_4"."r") OVER (ORDER BY "positions_4"."l" ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING)) + 1)) THEN 0 ELSE 1 END) AS "bound"
         FROM (
           SELECT
-            (("positions_3"."sx" + "positions_3"."range") - "positions_3"."dist") AS "r",
-            (("positions_3"."sx" - "positions_3"."range") + "positions_3"."dist") AS "l"
+            (("positions_3"."sx" - "positions_3"."range") + "positions_3"."dist") AS "l",
+            (("positions_3"."sx" + "positions_3"."range") - "positions_3"."dist") AS "r"
           FROM (
             SELECT
               "positions_2"."sx",

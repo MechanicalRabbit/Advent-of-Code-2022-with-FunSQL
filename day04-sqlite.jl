@@ -1,6 +1,12 @@
 using FunSQL
 using SQLite
 
+const funsql_as_integer = FunSQL.Fun."CAST(? AS INTEGER)"
+const funsql_greatest = FunSQL.Fun.max
+const funsql_instr = FunSQL.Fun.instr
+const funsql_least = FunSQL.Fun.min
+const funsql_substr = FunSQL.Fun.substr
+
 @funsql begin
 
 split_first(text, sep) =
@@ -24,9 +30,6 @@ split_lines(text) =
         iterate(split_lines_one_step())
     end
 
-as_integer(text) =
-    `CAST(? AS INTEGER)`($text)
-
 parse_assignments() =
     begin
         split_lines(:input)
@@ -45,20 +48,21 @@ solve_part1() =
         from(assignments)
         filter(l1 >= l2 && r1 <= r2 || l2 >= l1 && r2 <= r1)
         group()
-        define(part1 => count[])
+        define(part1 => count())
     end
 
 solve_part2() =
     begin
         from(assignments)
-        filter(max(l1, l2) <= min(r1, r2))
+        filter(greatest(l1, l2) <= least(r1, r2))
         group()
-        define(part2 => count[])
+        define(part2 => count())
     end
 
 solve_all() =
-    let assignments = parse_assignments()
+    begin
         solve_part1().cross_join(solve_part2())
+        with(assignments => parse_assignments())
     end
 
 const q = solve_all()
